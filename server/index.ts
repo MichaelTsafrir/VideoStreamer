@@ -1,5 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import session from 'express-session';
 import mongoose from 'mongoose';
 
 import { userModel }  from './models/users';
@@ -9,15 +10,22 @@ const port = process.env.PORT || 3001;
 
 const app = express();
 
+// Create mongo connection
 mongoose.connect('mongodb://localhost/videostreamer', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const db = mongoose.connection;
 
+// Setup db logs
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
 	console.log("Connected to mongo");
 });
 
+// Use session middleware
+app.use(session({
+	secret: 'SuperSecret',
+	saveUninitialized: false,
+}));
 
 // Use bodyParser Middleware to fetch body params
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -31,14 +39,36 @@ app.post('/auth', (req, res) => {
 	else {
 		userModel.find({ username, password })
 			.then(user => {
-				user ? res.send({ status: 'ok', user}) : res.send({ status: 'error', error: 'Wrong username or password'});
+				if (!user) {
+					res.send({ status: 'error', error: 'Wrong username or password'});
+				}
+				else {
+					// Save login session
+					if (req.session) {
+						req.session.user = user;
+					}
+					else {
+						console.error('Session is not set')
+					}
+
+					res.send({ status: 'ok', user})
+				}
 			})
 			.catch((error) => res.send({ status: 'error', error }));
 	}
 });
 
 app.post('/logOut', (req, res) => {
-	
+	if (req.session) {
+		// Destroy login session
+		req.session.destroy(error => {
+			// send feedback whether it was destroyed
+			error ? res.send({ status: 'error', error }) : res.send({ status: 'ok' });
+		});
+	}
+	else {
+		res.send({ status: 'ok' });
+	}
 });
 
 app.get('/videos/:userID', (req, res) => {
