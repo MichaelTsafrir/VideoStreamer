@@ -25,6 +25,7 @@ db.once('open', () => {
 app.use(session({
 	secret: 'SuperSecret',
 	saveUninitialized: false,
+	resave: false,
 }));
 
 // Use bodyParser Middleware to fetch body params
