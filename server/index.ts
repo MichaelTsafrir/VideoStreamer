@@ -1,4 +1,5 @@
 import express from 'express';
+import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import { User, Video } from '../common/types/schema';
 
@@ -18,23 +19,9 @@ db.once('open', () => {
 	console.log("Connected to mongo");
 });
 
-var testUser = new userModel({
-	username:"admin",
-	password:"123",
-	firstname:"Bob",
-	lastname:"Vision",
-	email:"admin@gmail.com",
-});
 
-var testVideo = new videoModel({
-	name: "test",
-	description: "bla",
-	url: "www.youtube.com",
-	addDate: Date.now()
-});
-
-testUser.save().then(() => console.log('ADDED TEST USER'));
-testVideo.save().then(() => console.log('ADDED TEST VIDEO'));
+// Use bodyParser Middleware to fetch body params
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.get('/user/:id', (req, res) => {
 	const userID = req.params.id;
@@ -44,12 +31,50 @@ app.get('/user/:id', (req, res) => {
 	});
 });
 
-app.get('/video/:id', (req, res) => {
-	const videoID = req.params.id;
+app.get('/video/:userID', (req, res) => {
+	const { userID } = req.params;
 
 	videoModel.find((err, video) => {
 		return res.send(video);
 	});
+});
+
+app.post('/addUser', (req, res) => {
+	const { username, password, firstname, lastname, email } = req.body;
+
+	if ( username && password && firstname && lastname && email) {
+		const newtUser = new userModel({
+			username,
+			password,
+			firstname,
+			lastname,
+			email,
+		});
+
+		newtUser.save().then(() => res.send({ status: 'ok' })).catch((error) => res.send({ status: 'error', error }));
+	}
+	else {
+		res.send({ status: 'error', error: 'missing params from request' })
+	}
+});
+
+app.post('/addVideo', (req, res) => {
+	const { name, description, url, byUser } = req.body;
+
+	if ( name && description && url && byUser) {
+		const newVideo = new videoModel({
+			name,
+			description,
+			url,
+			byUser,
+			addDate: Date.now()
+		});
+
+		newVideo.save().then(() => res.send({ status: 'ok' })).catch((error) => res.send({ status: 'error', error }));
+	}
+	else {
+		res.send({ status: 'error', error: 'missing params from request' })
+	}
 });
 
 app.listen(port, () => {
