@@ -1,7 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
-import { User, Video } from '../common/types/schema';
 
 import { userModel }  from './models/users';
 import { videoModel } from './models/videos';
@@ -23,20 +22,31 @@ db.once('open', () => {
 // Use bodyParser Middleware to fetch body params
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.get('/user/:id', (req, res) => {
-	const userID = req.params.id;
+app.post('/auth', (req, res) => {
+	const { username, password } = req.body;
 
-	userModel.find((err, user) => {
-		return res.send(user);
-	});
+	if (!username || !password) {
+		res.send({ status: 'error', error: 'missing params from request' });
+	}
+	else {
+		userModel.find({ username, password })
+			.then(user => {
+				user ? res.send({ status: 'ok', user}) : res.send({ status: 'error', error: 'Wrong username or password'});
+			})
+			.catch((error) => res.send({ status: 'error', error }));
+	}
 });
 
-app.get('/video/:userID', (req, res) => {
+app.post('/logOut', (req, res) => {
+	
+});
+
+app.get('/videos/:userID', (req, res) => {
 	const { userID } = req.params;
 
-	videoModel.find((err, video) => {
-		return res.send(video);
-	});
+	videoModel.find({ byUser: userID })
+		.then(videos => res.send({ status: 'ok', videos }))
+		.catch(error => res.send({ status: 'error', error }));
 });
 
 app.post('/addUser', (req, res) => {
