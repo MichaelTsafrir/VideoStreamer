@@ -1,49 +1,49 @@
 {
-  "name": "videostreamer",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.3.2",
-    "@testing-library/user-event": "^7.1.2",
-    "@types/express": "^4.17.2",
-    "@types/express-session": "^1.15.16",
-    "@types/jest": "^24.0.0",
-    "@types/mongoose": "^5.7.0",
-    "@types/node": "^12.0.0",
-    "@types/react": "^16.9.0",
-    "@types/react-dom": "^16.9.0",
-    "body-parser": "^1.19.0",
-    "express": "^4.17.1",
-    "express-session": "^1.17.0",
-    "mongoose": "^5.8.11",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
-    "react-scripts": "3.3.1",
-    "ts-node": "^8.6.2",
-    "typescript": "~3.7.2"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "server": "ts-node server/index.ts",
-    "debug": "node --nolazy --inspect-brk=9229 server/index.ts",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+	"name": "videostreamer",
+	"version": "0.1.0",
+	"private": true,
+	"dependencies": {
+		"@testing-library/jest-dom": "^4.2.4",
+		"@testing-library/react": "^9.3.2",
+		"@testing-library/user-event": "^7.1.2",
+		"@types/express": "^4.17.2",
+		"@types/express-session": "^1.15.16",
+		"@types/jest": "^24.0.0",
+		"@types/mongoose": "^5.7.0",
+		"@types/node": "^12.0.0",
+		"@types/react": "^16.9.0",
+		"@types/react-dom": "^16.9.0",
+		"body-parser": "^1.19.0",
+		"express": "^4.17.1",
+		"express-session": "^1.17.0",
+		"mongoose": "^5.8.11",
+		"react": "^16.12.0",
+		"react-dom": "^16.12.0",
+		"react-scripts": "3.3.1",
+		"ts-node": "^8.6.2",
+		"typescript": "~3.7.2"
+	},
+	"scripts": {
+		"start": "react-scripts start",
+		"build": "react-scripts build",
+		"server": "ts-node server/index.ts",
+		"debug": "node --nolazy --inspect-brk=9229 server/index.ts",
+		"test": "react-scripts test",
+		"eject": "react-scripts eject"
+	},
+	"eslintConfig": {
+		"extends": "react-app"
+	},
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	}
 }
