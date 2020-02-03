@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import bodyParser from 'body-parser';
 import session from 'express-session';
 import mongoose from 'mongoose';
@@ -22,15 +23,18 @@ db.once('open', () => {
 	console.log("Connected to mongo");
 });
 
+// Allow Cross-Origin
+app.use(cors());
+
+// Use bodyParser Middleware to fetch body params
+app.use(bodyParser.json());
+
 // Use session middleware
 app.use(session({
 	secret: 'SuperSecret',
 	saveUninitialized: false,
 	resave: false,
 }));
-
-// Use bodyParser Middleware to fetch body params
-app.use(bodyParser.urlencoded({ extended: false }));
 
 app.get('/', (req, res) => {
 	res.sendFile(path.join(__dirname, 'build', 'index.html'));
@@ -45,19 +49,19 @@ app.post('/auth', (req, res) => {
 	else {
 		userModel.find({ username, password })
 			.then(user => {
-				if (!user) {
+				if (!user || !user.length) {
 					res.send({ status: 'error', error: 'Wrong username or password'});
 				}
 				else {
 					// Save login session
 					if (req.session) {
-						req.session.user = user;
+						req.session.user = user[0];
 					}
 					else {
 						console.error('Session is not set')
 					}
 
-					res.send({ status: 'ok', user})
+					res.send({ status: 'ok', user: user[0]});
 				}
 			})
 			.catch((error) => res.send({ status: 'error', error }));

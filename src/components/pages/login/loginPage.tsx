@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './loginPage.css';
+import './loginPage.scss';
 import Login from './login/login';
 
 interface Props {}

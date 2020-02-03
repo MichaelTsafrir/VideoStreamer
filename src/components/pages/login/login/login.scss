@@ -10,10 +10,14 @@
 
 .login-fields {
     margin: auto;
-    padding: 35% 65px 0 0;
+    padding: 40% 65px 0 0;
 
     td {
         padding-bottom: 10px;
+    }
+
+    td:nth-child(2) {
+        width: 173px;
     }
 }
 

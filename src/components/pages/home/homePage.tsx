@@ -1,5 +1,5 @@
 import React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, Link } from 'react-router-dom';
 
 interface Props extends RouteComponentProps {}
 
@@ -8,5 +8,8 @@ interface Props extends RouteComponentProps {}
 
 
 export const HomePage: React.FC<Props> = ({ history }) => {
-	return <div>Home Page</div>
+	return <div>
+		Home Page
+		<Link to='/library'>library</Link> 
+	</div>
 }
