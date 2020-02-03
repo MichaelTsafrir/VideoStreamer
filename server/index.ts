@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import session from 'express-session';
 import mongoose from 'mongoose';
+import path from 'path';
 
 import { userModel }  from './models/users';
 import { videoModel } from './models/videos';
@@ -30,6 +31,10 @@ app.use(session({
 
 // Use bodyParser Middleware to fetch body params
 app.use(bodyParser.urlencoded({ extended: false }));
+
+app.get('/', (req, res) => {
+	res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 
 app.post('/auth', (req, res) => {
 	const { username, password } = req.body;

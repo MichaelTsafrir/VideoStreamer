@@ -1,0 +1,23 @@
+.login-container {
+	border: 1px solid #ffffff52;
+    border-radius: 15px;
+    height: 400px;
+    width: 400px;
+    margin: auto;
+	background: #ffffff14;
+	margin-bottom: 10px;
+}
+
+.login-fields {
+    margin: auto;
+    padding: 35% 65px 0 0;
+
+    td {
+        padding-bottom: 10px;
+    }
+}
+
+.login-error {
+    color: #801212;
+    font-weight: bold;
+}

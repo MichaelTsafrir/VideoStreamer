@@ -5,7 +5,7 @@ import { LoginPage } from '../pages/login/loginPage';
 import { RegisterPage } from '../pages/register/registerPage';
 import { LibraryPage } from '../pages/library/libraryPage';
 import logo from '../../images/logo.png';
-import './app.css';
+import './app.scss';
 
 const App: React.FC = () => {
 	return (
