@@ -2,6 +2,19 @@
 	text-align: left;
 	margin: auto;
 	padding-top: 90px;
+
+	td {
+        padding-bottom: 5px;
+    }
+
+    td:nth-child(2) {
+        width: 173px;
+    }
+
+	.error, .register-error {
+		color: #801212;
+		font-weight: bold;
+	}
 	
 	.input-row {
 		position: relative;

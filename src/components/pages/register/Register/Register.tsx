@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import './Register.scss';
 import Container from '../../../Container/Container';
 
@@ -6,20 +7,110 @@ interface Props {}
 
 const Register: React.FC<Props> = () => {
 	const [username, setUsername] = useState('');
+	const [usernameError, setUsernameError] = useState(false);
 	const [password, setPassword] = useState('');
+	const [passwordError, setPasswordError] = useState(false);
 	const [passwordConf, setPasswordConf] = useState('');
+	const [passwordConfError, setPasswordConfError] = useState(false);
 	const [firstname, setFirstname] = useState('');
+	const [firstnameError, setFirstnameError] = useState(false);
 	const [lastname, setLastname] = useState('');
+	const [lastnameError, setLastnameError] = useState(false);
 	const [email, setEmail] = useState('');
+	const [emailError, setEmailError] = useState(false);
+	const [error, setError] = useState('');
 
-	const handleSubmit = () => {};
+	const setMissingFields = () => setError('Please Fill All Fields!');
+
+	const clearError = () => {
+		setUsernameError(false);
+		setPasswordError(false);
+		setPasswordConfError(false);
+		setFirstnameError(false);
+		setLastnameError(false);
+		setEmailError(false);
+		setError('');
+	}
+
 	const handleClear = () => {
+		clearError();
+
 		setUsername('');
-		setPassword('');
+		setPassword('');		
 		setPasswordConf('');
-		setFirstname('');
+		setFirstname('');		
 		setLastname('');
 		setEmail('');
+	};
+
+	const handleSubmit = async (e: React.SyntheticEvent) => {
+		e.preventDefault();
+
+		clearError();
+
+		if (!username) {
+			setMissingFields();
+			setUsernameError(true);
+		}
+
+		if (!password) {
+			setMissingFields();
+			setPasswordError(true);
+		}
+
+		if (!passwordConf) {
+			setMissingFields();
+			setPasswordConfError(true);
+		}
+
+		if (!firstname) {
+			setMissingFields();
+			setFirstnameError(true);
+		}
+
+		if (!lastname) {
+			setMissingFields();
+			setLastnameError(true);
+		}
+
+		if (!email) {
+			setMissingFields();
+			setEmailError(true);
+		}
+
+		if (password !== passwordConf) {
+			setError('Passwords Don\'t Match!')
+			setPasswordError(true);
+			setPasswordConfError(true);
+		}
+
+		if (!error) {
+			try {
+				const res = await axios.post('http://localhost:3001/register', {
+					username,
+					password,
+					firstname,
+					lastname,
+					email,
+				});
+
+				const { error, status } = res.data;
+
+				if (status === "ok") {
+					setError("REGISTERED!")
+				}
+				else {
+					setError(error);
+				}
+
+
+				console.log(res);
+			}
+			catch (err) {
+				console.log(err);
+				setError('Client couldn\'t connect to server');
+			}
+		}
 	};
 
 	return (
@@ -28,27 +119,27 @@ const Register: React.FC<Props> = () => {
 				<table className="register-fields">
 					<tbody>
 						<tr>
-							<td>Username:</td>
+							<td className={usernameError ? "error" : ""}>Username:</td>
 							<td><input type="text" value={username} onChange={e => setUsername(e.target.value)} /></td>
 						</tr>
 						<tr>
-							<td>Password:</td>
+							<td className={passwordError ? "error" : ""}>Password:</td>
 							<td><input type="password" value={password} onChange={e => setPassword(e.target.value)} /></td>
 						</tr>
 						<tr>
-							<td>Confirm:</td>
+							<td className={passwordConfError ? "error" : ""}>Confirm:</td>
 							<td><input type="password" value={passwordConf} onChange={e => setPasswordConf(e.target.value)} /></td>
 						</tr>
 						<tr>
-							<td>Firstname:</td>
+							<td className={firstnameError ? "error" : ""}>Firstname:</td>
 							<td><input type="text" value={firstname} onChange={e => setFirstname(e.target.value)} /></td>
 						</tr>
 						<tr>
-							<td>Lastname:</td>
+							<td className={lastnameError ? "error" : ""}>Lastname:</td>
 							<td><input type="text" value={lastname} onChange={e => setLastname(e.target.value)} /></td>
 						</tr>
 						<tr>
-							<td>Email:</td>
+							<td className={emailError ? "error" : ""}>Email:</td>
 							<td><input type="text" value={email} onChange={e => setEmail(e.target.value)} /></td>
 						</tr>
 						<tr>
@@ -58,6 +149,12 @@ const Register: React.FC<Props> = () => {
 								<input className="clear-button" type="button" value="Clear" onClick={handleClear} />
 							</td>
 						</tr>
+						{ error ?
+						<tr>
+							<td></td>
+							<td><label className="register-error">{error}</label></td>
+						</tr>: null
+						}
 					</tbody>
 				</table>
 			</form>

@@ -21,4 +21,4 @@ export const LoginPage: React.FC<Props> = ({ history }) => {
 			<Link to='/register' className="register-link">Not a user? <u>Register</u> now!</Link> 
 		</div>
 	)
-}
+};

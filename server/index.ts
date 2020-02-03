@@ -89,7 +89,7 @@ app.get('/videos/:userID', (req, res) => {
 		.catch(error => res.send({ status: 'error', error }));
 });
 
-app.post('/addUser', (req, res) => {
+app.post('/register', (req, res) => {
 	const { username, password, firstname, lastname, email } = req.body;
 
 	if ( username && password && firstname && lastname && email) {
