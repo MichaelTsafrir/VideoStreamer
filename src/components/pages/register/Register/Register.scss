@@ -1,0 +1,14 @@
+.register-fields {
+	text-align: left;
+	margin: auto;
+	padding-top: 90px;
+	
+	.input-row {
+		position: relative;
+		
+		.clear-button {
+			position: absolute;
+			right: 1px;
+		}
+	}
+}

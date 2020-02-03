@@ -3,4 +3,10 @@
     border-radius: 5px;
     width: 90%;
     margin: auto;
+    position: relative;
+
+    input {
+        position: absolute;
+        right: 35px;
+    }
 };

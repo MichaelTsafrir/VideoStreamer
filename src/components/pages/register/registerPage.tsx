@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { userSelector } from '../../../selectors';
 import { RouteComponentProps } from 'react-router-dom';
+import Register from './Register/Register';
 
 interface Props extends RouteComponentProps {}
 
@@ -13,5 +14,9 @@ export const RegisterPage: React.FC<Props> = ({ history }) => {
 		history.push('/');
 	}
 	
-	return <div>Register Page</div>
-}
+	return (
+		<div>
+			<Register />
+		</div>
+	);
+};

@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../../../actions/user';
 import './login.scss';
+import Container from '../../../Container/Container';
 
 interface Props {}
 
@@ -45,7 +46,7 @@ const Login: React.FC<Props> = () => {
 		}
 	}
 	return (
-		<div className="login-container">
+		<Container>
 			<form onSubmit={handleSubmit}>
 				<table className="login-fields">
 					<tbody>
@@ -70,7 +71,7 @@ const Login: React.FC<Props> = () => {
 					</tbody>
 				</table>
 			</form>
-		</div>
+		</Container>
 	)
 }
 
