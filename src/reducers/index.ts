@@ -1,12 +1,15 @@
 import { combineReducers } from 'redux';
-import user from './user';
-import videos from './videos';
+import user, { UserState } from './user';
+import videos, { VideosState } from './videos';
 
 const rootReducers = combineReducers({
 	user,
 	videos,
 });
 
-export type RootState = ReturnType<typeof rootReducers>;
+export type RootState = {
+	user: UserState,
+	videos: VideosState,
+};
 
 export default rootReducers;

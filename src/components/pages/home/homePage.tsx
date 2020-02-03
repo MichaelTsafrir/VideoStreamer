@@ -1,13 +1,12 @@
 import React from 'react';
 import { RouteComponentProps, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { userSelector, videosSelector } from '../../../selectors';
+import { userSelector } from '../../../selectors';
 
 interface Props extends RouteComponentProps {}
 
 export const HomePage: React.FC<Props> = ({ history }) => {
 	const user = useSelector(userSelector);
-	const videos = useSelector(videosSelector);
 
 	// Check if user is logged in
 	if (!user) {
@@ -15,9 +14,8 @@ export const HomePage: React.FC<Props> = ({ history }) => {
 	}
 
 	console.log(user, !user, !undefined);
-	console.log(user, videos);
 	return <div>
-		Home Page
+		Welcome {user!.firstname}
 		<Link to='/library'>library</Link> 
 	</div>
 }

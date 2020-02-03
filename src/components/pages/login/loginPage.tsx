@@ -1,11 +1,20 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import './loginPage.scss';
 import Login from './login/login';
+import { useSelector } from 'react-redux';
+import { userSelector } from '../../../selectors';
 
-interface Props {}
+interface Props extends RouteComponentProps {}
 
-export const LoginPage: React.FC<Props> = () => {
+export const LoginPage: React.FC<Props> = ({ history }) => {
+	const user = useSelector(userSelector);
+
+	// Check if user is logged in
+	if (user) {
+		history.push('/');
+	}
+	
 	return (
 		<div>
 			<Login />

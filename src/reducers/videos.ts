@@ -1,15 +1,14 @@
-import { Reducer } from "react";
 import { Video } from '../../common/types/schema';
-import { SET_VIDEOS, REMOVE_VIDEOS } from "../actions/videos";
+import { SET_VIDEOS, REMOVE_VIDEOS, VideosActionTypes } from "../actions/videos";
 
-export type VideoState = Video[] | null;
+export type VideosState = Video[] | null;
 
-export const initialState: VideoState = null;
+export const initialState: VideosState = null;
 
-const videosReducer: any = (state:any = initialState, action:any) => {
+const videosReducer = (state = initialState, action: VideosActionTypes): VideosState => {
 	switch (action.type) {
 		case SET_VIDEOS:
-			return {};
+			return action.payload;
 		case REMOVE_VIDEOS:
 			return initialState;
 		default:
