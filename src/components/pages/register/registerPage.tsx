@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { userSelector } from '../../../selectors';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, Link } from 'react-router-dom';
 import Register from './Register/Register';
 
 interface Props extends RouteComponentProps {}
@@ -17,6 +17,7 @@ export const RegisterPage: React.FC<Props> = ({ history }) => {
 	return (
 		<div>
 			<Register />
+			<Link to='/login' className="login-link">Already a user? <u>Log in</u> now!</Link> 
 		</div>
 	);
 };

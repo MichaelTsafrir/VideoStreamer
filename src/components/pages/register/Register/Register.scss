@@ -2,6 +2,7 @@
 	text-align: left;
 	margin: auto;
 	padding-top: 90px;
+	position: relative;
 
 	td {
         padding-bottom: 5px;
@@ -24,4 +25,13 @@
 			right: 1px;
 		}
 	}
+}
+
+.register-complete {
+	position: absolute;
+	bottom: 40px;
+	left: 50%;
+	transform: translateX(-50%);
+	font-size: 28px;
+	color: #273c86;
 }

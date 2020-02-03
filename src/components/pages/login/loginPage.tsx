@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
-import './loginPage.scss';
 import Login from './login/login';
 import { useSelector } from 'react-redux';
 import { userSelector } from '../../../selectors';

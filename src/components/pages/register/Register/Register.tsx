@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+// import { setUser }
 import './Register.scss';
 import Container from '../../../Container/Container';
+import { setUser } from '../../../../actions/user';
+import { useHistory } from 'react-router-dom';
 
 interface Props {}
 
 const Register: React.FC<Props> = () => {
+	const dispatch = useDispatch();
+	const history = useHistory();
+
 	const [username, setUsername] = useState('');
 	const [usernameError, setUsernameError] = useState(false);
 	const [password, setPassword] = useState('');
@@ -19,6 +26,7 @@ const Register: React.FC<Props> = () => {
 	const [email, setEmail] = useState('');
 	const [emailError, setEmailError] = useState(false);
 	const [error, setError] = useState('');
+	const [isRegistered, setisRegistered] = useState(false);
 
 	const setMissingFields = () => setError('Please Fill All Fields!');
 
@@ -41,6 +49,7 @@ const Register: React.FC<Props> = () => {
 		setFirstname('');		
 		setLastname('');
 		setEmail('');
+		setisRegistered(false);
 	};
 
 	const handleSubmit = async (e: React.SyntheticEvent) => {
@@ -94,10 +103,16 @@ const Register: React.FC<Props> = () => {
 					email,
 				});
 
-				const { error, status } = res.data;
+				const { error, status, user } = res.data;
 
 				if (status === "ok") {
-					setError("REGISTERED!")
+					setisRegistered(true);
+					dispatch(setUser(user));
+
+					await setTimeout(() => {
+						handleClear();
+						history.push('/');
+					}, 4000);
 				}
 				else {
 					setError(error);
@@ -157,6 +172,7 @@ const Register: React.FC<Props> = () => {
 						}
 					</tbody>
 				</table>
+					{ isRegistered && <label className="register-complete">Registered!</label> }
 			</form>
 		</Container>
 	);

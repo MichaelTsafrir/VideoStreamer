@@ -93,7 +93,7 @@ app.post('/register', (req, res) => {
 	const { username, password, firstname, lastname, email } = req.body;
 
 	if ( username && password && firstname && lastname && email) {
-		const newtUser = new userModel({
+		const newUser = new userModel({
 			username,
 			password,
 			firstname,
@@ -101,7 +101,19 @@ app.post('/register', (req, res) => {
 			email,
 		});
 
-		newtUser.save().then(() => res.send({ status: 'ok' })).catch((error) => res.send({ status: 'error', error }));
+		newUser.save()
+		.then(() => {
+			// Save to session
+			if (req.session) {
+				req.session.user = newUser;
+			}
+			else {
+				console.error('Session is not set')
+			}
+
+			res.send({ status: 'ok', user: newUser })
+		})
+		.catch((error) => res.send({ status: 'error', error }));
 	}
 	else {
 		res.send({ status: 'error', error: 'missing params from request' })
