@@ -19,8 +19,8 @@ const App: React.FC = () => {
 							<Route path='/' exact component={HomePage} />
 							<Route path='/login' exact component={LoginPage} />
 							<Route path='/register' exact component={RegisterPage} />
-							<Route path='/library/:videoID' exact component={LibraryPage} />
-							<Route path='/' render={() => <h3>Oops! Wrong Route!</h3>} />
+							<Route path='/library/:videoID?' exact component={LibraryPage} />
+							<Route path='/' render={() => <h3>Oops! Could't Find Page (404)!</h3>} />
 						</Switch>
 					</BrowserRouter>
 				</div>
