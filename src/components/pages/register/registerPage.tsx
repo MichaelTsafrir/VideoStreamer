@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { userSelector } from '../../../selectors';
 import { RouteComponentProps, Link } from 'react-router-dom';
@@ -8,11 +8,13 @@ interface Props extends RouteComponentProps {}
 
 export const RegisterPage: React.FC<Props> = ({ history }) => {
 	const user = useSelector(userSelector);
-
-	// Check if user is logged in
-	if (user) {
-		history.push('/');
-	}
+	
+	useEffect(() => {
+		// Check if user is logged in
+		if (user) {
+			history.push('/');
+		}
+	});
 	
 	return (
 		<div>

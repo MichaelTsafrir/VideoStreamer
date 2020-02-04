@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
-// import { setUser }
 import './Register.scss';
 import Container from '../../../Container/Container';
 import { setUser } from '../../../../actions/user';
-import { useHistory } from 'react-router-dom';
 
 interface Props {}
 
 const Register: React.FC<Props> = () => {
 	const dispatch = useDispatch();
-	const history = useHistory();
 
 	const [username, setUsername] = useState('');
 	const [usernameError, setUsernameError] = useState(false);
@@ -107,19 +104,15 @@ const Register: React.FC<Props> = () => {
 
 				if (status === "ok") {
 					setisRegistered(true);
-					dispatch(setUser(user));
-
+					
 					await setTimeout(() => {
 						handleClear();
-						history.push('/');
-					}, 4000);
+						dispatch(setUser(user));
+					}, 2000);
 				}
 				else {
 					setError(error);
 				}
-
-
-				console.log(res);
 			}
 			catch (err) {
 				console.log(err);

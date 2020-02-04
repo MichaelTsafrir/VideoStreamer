@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../../../actions/user';
 import './login.scss';
@@ -14,7 +13,6 @@ const Login: React.FC<Props> = () => {
 	const [error, setError] = useState('');
 
 	const dispatch = useDispatch();
-	const history = useHistory();
 
 	const handleSubmit = async (e: React.SyntheticEvent) => {
 		e.preventDefault();
@@ -36,7 +34,6 @@ const Login: React.FC<Props> = () => {
 				else {
 					// User Connected Successfuly
 					dispatch(setUser(user));
-					history.push('/');
 				}
 			}
 			catch(err) {
