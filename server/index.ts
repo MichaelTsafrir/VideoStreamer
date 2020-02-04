@@ -5,6 +5,9 @@ import session from 'express-session';
 import mongoose from 'mongoose';
 import path from 'path';
 
+import { User } from '../common/types/schema';
+import { userDocument } from './types';
+
 import { userModel }  from './models/users';
 import { videoModel } from './models/videos';
 
@@ -47,21 +50,37 @@ app.post('/auth', (req, res) => {
 		res.send({ status: 'error', error: 'missing params from request' });
 	}
 	else {
-		userModel.find({ username, password })
-			.then(user => {
-				if (!user || !user.length) {
+		userModel.find({ username, password }).limit(1)
+			.then((data: userDocument[]) => {
+				if (!data || !data.length) {
 					res.send({ status: 'error', error: 'Wrong username or password'});
 				}
 				else {
+					const user: User = {
+						id: data[0].id,
+						username: data[0].username,
+						firstname: data[0].firstname,
+						lastname: data[0].lastname,
+						email: data[0].email,
+					};
+
 					// Save login session
 					if (req.session) {
-						req.session.user = user[0];
+						req.session.user = user;
+						req.session.save((err) => {
+							if (err) {
+								// Couldn't save session, Log error
+								console.error('Couldn\'t save session', err);
+							}
+							else
+								console.log(req.session);
+						});
 					}
 					else {
 						console.error('Session is not set')
 					}
 
-					res.send({ status: 'ok', user: user[0]});
+					res.send({ status: 'ok', user: user});
 				}
 			})
 			.catch((error) => res.send({ status: 'error', error }));

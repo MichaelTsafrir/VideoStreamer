@@ -3,6 +3,7 @@ import { RouteComponentProps, Link } from 'react-router-dom';
 import VideoList from './VideoList/VideoList';
 import { useSelector } from 'react-redux';
 import { userSelector } from '../../../selectors';
+import Video from './Video/Video';
 
 interface Props extends RouteComponentProps<{ videoID: string }> {}
 
@@ -20,6 +21,9 @@ export const LibraryPage: React.FC<Props> = ({ match, history }) => {
 	return <div>
 		Library Page for "{match.params.videoID}"
 		<VideoList />
-		<Link to='/'>Go Home</Link> 
+		<Link to='/'>Go Home</Link>
+		<div className="video-container">
+			<Video />
+		</div>
 	</div>
 }

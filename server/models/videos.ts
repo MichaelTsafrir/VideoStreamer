@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import { videoDocument } from '../types';
+
 const Schema = mongoose.Schema;
 
 export const videoSchemaData = {
@@ -15,4 +17,4 @@ export const VIDEO_MODEL = 'video';
 export const videoSchema = new Schema(videoSchemaData);
 
 // Create model
-export const videoModel = mongoose.model(VIDEO_MODEL, videoSchema);
+export const videoModel = mongoose.model<videoDocument>(VIDEO_MODEL, videoSchema);

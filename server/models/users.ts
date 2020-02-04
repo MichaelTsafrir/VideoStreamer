@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import { userDocument } from '../types';
+
 const Schema = mongoose.Schema;
 
 export const userSchemaData = {
@@ -15,4 +17,4 @@ export const USER_MODEL = 'user';
 export const userSchema = new Schema(userSchemaData);
 
 // Create model
-export const userModel = mongoose.model(USER_MODEL, userSchema);
+export const userModel = mongoose.model<userDocument>(USER_MODEL, userSchema);
