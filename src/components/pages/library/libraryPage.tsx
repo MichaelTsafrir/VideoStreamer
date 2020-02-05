@@ -4,6 +4,7 @@ import VideoList from './VideoList/VideoList';
 import { useSelector } from 'react-redux';
 import { userSelector } from '../../../selectors';
 import Video from './Video/Video';
+import './LibraryPage.scss';
 
 interface Props extends RouteComponentProps<{ videoID: string }> {}
 

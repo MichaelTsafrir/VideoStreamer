@@ -4,12 +4,27 @@ import bodyParser from 'body-parser';
 import session from 'express-session';
 import mongoose from 'mongoose';
 import path from 'path';
-
 import { User } from '../common/types/schema';
 import { userDocument } from './types';
 
 import { userModel }  from './models/users';
 import { videoModel } from './models/videos';
+
+const Stream = require('node-rtsp-stream');
+
+
+const stream = new Stream({
+	name: 'name',
+	streamUrl: 'rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov',
+	wsPort: 3002,
+	ffmpegOptions: {
+		'-vb': "50m",
+		'-stats': '',
+		'-r': 30,
+		'-tune': "film",
+		"-preset": "medium",
+	}
+});
 
 const port = process.env.PORT || 3001;
 
