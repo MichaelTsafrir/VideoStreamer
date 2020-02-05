@@ -1,4 +1,4 @@
-import { Video } from "../../common/types/schema";
+import { Video } from "../../common/types";
 
 
 export const SET_VIDEOS = 'SET_VIDEOS';

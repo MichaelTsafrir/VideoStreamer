@@ -1,4 +1,4 @@
-import { User } from '../../common/types/schema'; 
+import { User } from '../../common/types'; 
 import { SET_USER, REMOVE_USER, UserActionTypes } from "../actions/user";
 
 export type UserState = User | null;

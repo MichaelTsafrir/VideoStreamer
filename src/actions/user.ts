@@ -1,4 +1,4 @@
-import { User } from "../../common/types/schema";
+import { User } from "../../common/types";
 
 export const SET_USER = 'SET_USER';
 export const REMOVE_USER = 'REMOVE_USER';
