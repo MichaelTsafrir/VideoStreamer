@@ -1,25 +1,35 @@
-import React, { useRef, useEffect } from 'react';
-const jsmpeg = require('jsmpeg');
+import React from 'react';
+import dayjs from 'dayjs';
+import { Video as VideoType } from "../../../../../common/types";
+import videoPlaceholder from "../../../../images/video-placeholder.png";
 
-interface Props {}
+import './Video.scss';
 
-const Video: React.FC<Props> = () => {
-	const videoCanvasId = 'videoCanvas';
-	const videoRef = useRef(null);
+interface Props {
+	video: VideoType,
+}
 
-	useEffect(() => {
-		const canvas = document.getElementById(videoCanvasId);
-		const client = new WebSocket('ws://localhost:3002');
-		new jsmpeg(client, {	
-			canvas,
-		});
-	});
-	
-	return (
-		<div className="jsmpeg" data-url="ws://localhost:3002">
-			<canvas ref={videoRef} id={videoCanvasId}></canvas>
+const Video: React.FC<Props> = (props) => {
+	const { video } = props;
+
+	return(
+		<div className="video-placeholder">
+			<table>
+				<tbody>
+					<tr>
+						<td rowSpan={3}><img src={videoPlaceholder} alt={video.name} /></td>
+						<td><label>{video.name}</label></td>
+					</tr>
+					<tr>
+						<td><label>{video.description}</label></td>
+					</tr>
+					<tr>
+						<td><label>{dayjs(video.addDate).format('DD/MM/YY HH:mm')}</label></td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
-	);
-};
+	)
+}
 
 export default Video;
