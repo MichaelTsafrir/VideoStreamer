@@ -1,4 +1,9 @@
 .video-placeholder {
+	cursor: pointer;
+
+	label {
+		cursor: pointer;
+	}
 
 	img {
 		height: 120px;

@@ -4,6 +4,7 @@ import { Video as VideoType } from "../../../../../common/types";
 import videoPlaceholder from "../../../../images/video-placeholder.png";
 
 import './Video.scss';
+import { useHistory } from 'react-router-dom';
 
 interface Props {
 	video: VideoType,
@@ -11,9 +12,14 @@ interface Props {
 
 const Video: React.FC<Props> = (props) => {
 	const { video } = props;
+	const history = useHistory();
+
+	const handleClick = (e: React.SyntheticEvent) => {
+		history.push(`/library/${video.id}`);
+	};
 
 	return(
-		<div className="video-placeholder">
+		<div className="video-placeholder" onClick={handleClick}>
 			<table>
 				<tbody>
 					<tr>
