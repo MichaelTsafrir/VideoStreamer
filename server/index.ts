@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import session from 'express-session';
 import mongoose from 'mongoose';
 import path from 'path';
-import { User } from '../common/types';
+import { User, Video } from '../common/types';
 import { webSocketPort } from '../common/common';
 import { userDocument } from './types';
 
@@ -119,8 +119,20 @@ app.post('/logOut', (req, res) => {
 app.get('/videos/:userID', (req, res) => {
 	const { userID } = req.params;
 
-	videoModel.find({ byUser: userID })
-		.then(videos => res.send({ status: 'ok', videos }))
+	// videoModel.find({ byUser: userID })
+	videoModel.find()
+		.then(data => {
+			const videos: Video[] = data.map(({id, name, description, url, byUser, addDate}) => ({
+				id,
+				name,
+				description,
+				url,
+				byUser,
+				addDate,
+			}));
+
+			res.send({ status: 'ok', videos })
+		})
 		.catch(error => res.send({ status: 'error', error }));
 });
 

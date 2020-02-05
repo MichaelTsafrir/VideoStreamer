@@ -1,17 +1,17 @@
 import mongoose from 'mongoose';
 
 export interface User {
-	id: String,
-	username: String,
-	firstname: String,
-	lastname: String,
-	email: String
+	id: string,
+	username: string,
+	firstname: string,
+	lastname: string,
+	email: string
 }
 
 export interface Video {
-	name: String,
-	description: String,
-	url: String,
+	name: string,
+	description: string,
+	url: string,
 	byUser: mongoose.Types.ObjectId,
 	addDate: Date,
 }
