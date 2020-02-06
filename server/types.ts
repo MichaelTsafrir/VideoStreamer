@@ -11,6 +11,6 @@ export interface videoDocument extends mongoose.Document {
 	name: string,
 	description: string,
 	url: string,
-	byUser: mongoose.Types.ObjectId,
+	byUser: string,
 	addDate: Date,
 }

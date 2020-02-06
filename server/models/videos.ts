@@ -7,7 +7,7 @@ export const videoSchemaData = {
 	name: String,
 	description: String,
 	url: String,
-	byUser: mongoose.Types.ObjectId,
+	byUser: String,
 	addDate: Date,
 };
 

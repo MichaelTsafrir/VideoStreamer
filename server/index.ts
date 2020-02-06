@@ -122,8 +122,7 @@ app.post('/logOut', (req, res) => {
 app.get('/videos/:userID', (req, res) => {
 	const { userID } = req.params;
 
-	// videoModel.find({ byUser: userID })
-	videoModel.find()
+	videoModel.find({ byUser: userID })
 		.then(data => {
 			const videos: Video[] = data.map(({id, name, description, url, byUser, addDate}) => ({
 				id,
@@ -134,7 +133,7 @@ app.get('/videos/:userID', (req, res) => {
 				addDate,
 			}));
 
-			res.send({ status: 'ok', videos })
+			res.send({ status: 'ok', videos });
 		})
 		.catch(error => res.send({ status: 'error', error }));
 });
