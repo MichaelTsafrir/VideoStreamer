@@ -17,12 +17,11 @@ const Player: React.FC<Props> = (props) => {
 		if (videoID) {	
 			let client: WebSocket;
 
-			const closeFunction = () =>{
-				if (client)
-					client.close();
-			};
+			const reqCancelToken = axios.CancelToken.source();
 
-			axios.post('http://localhost:3001/startVideo', { videoID: videoID })
+			const closeFunction = () => client && client.close();
+
+			axios.post('http://localhost:3001/startVideo', { videoID: videoID }, { cancelToken: reqCancelToken.token })
 			.then(res => {
 				const { error, status } = res.data;
 
@@ -31,6 +30,7 @@ const Player: React.FC<Props> = (props) => {
 					console.log("Failed to start stream on server", error);
 				}
 				else {
+					console.log("CLIENT CONNECTED");
 					const canvas = document.getElementById(videoCanvasId);
 					client = new WebSocket('ws://localhost:3002');
 					new jsmpeg(client, {	
