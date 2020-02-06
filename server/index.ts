@@ -6,17 +6,18 @@ import mongoose from 'mongoose';
 import path from 'path';
 import { User, Video } from '../common/types';
 import { webSocketPort } from '../common/common';
-import { userDocument } from './types';
 
 import { userModel }  from './models/users';
 import { videoModel } from './models/videos';
 
 const Stream = require('node-rtsp-stream');
 
-
+// rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov
+// Outer library, has no TS definition
+// let stream: any;
 const stream = new Stream({
-	name: 'name',
-	streamUrl: 'rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov',
+	name: "test",
+	streamUrl: "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov",
 	wsPort: webSocketPort,
 	ffmpegOptions: {
 		'-vb': "50m",
@@ -24,7 +25,7 @@ const stream = new Stream({
 		'-r': 30,
 		'-tune': "film",
 		"-preset": "medium",
-	}
+	},
 });
 
 const port = process.env.PORT || 3001;
@@ -67,7 +68,7 @@ app.post('/auth', (req, res) => {
 	}
 	else {
 		userModel.find({ username, password }).limit(1)
-			.then((data: userDocument[]) => {
+			.then((data) => {
 				if (!data || !data.length) {
 					res.send({ status: 'error', error: 'Wrong username or password'});
 				}
@@ -134,6 +135,48 @@ app.get('/videos/:userID', (req, res) => {
 			res.send({ status: 'ok', videos })
 		})
 		.catch(error => res.send({ status: 'error', error }));
+});
+
+app.post('/startVideo', (req, res) => {
+	const { videoID } = req.body;
+
+	if (!videoID) {
+		res.send({ status:"error", error: "videoID as body param is required"});
+	}
+	else{
+		videoModel.find({ _id: videoID})
+			.then(data => {
+				if (!data.length) {
+					res.send({ status: 'error', error: `Couldn't find videoID ${videoID}` })
+				}
+				else{
+					const video = data[0];
+
+					// if (stream) {
+					// 	// Kill running stream
+					// 	stream.stop();
+					// }
+	
+					// stream = new Stream({
+					// 	name: video.name,
+					// 	streamUrl: video.url,
+					// 	wsPort: webSocketPort,
+					// 	ffmpegOptions: {
+					// 		'-vb': "50m",
+					// 		'-stats': '',
+					// 		'-r': 30,
+					// 		'-tune': "film",
+					// 		"-preset": "medium",
+					// 	},
+					// });
+	
+					res.send({ status: 'ok' })
+				}
+			})
+			.catch(error => res.send({ status: 'error', error }));
+
+	}
+
 });
 
 app.post('/register', (req, res) => {
