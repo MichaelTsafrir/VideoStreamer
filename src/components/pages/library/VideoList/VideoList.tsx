@@ -12,21 +12,23 @@ const VideoList = () => {
 	const videos = useSelector(videosSelector);
 
 	useEffect(() => {
-		axios.get('http://localhost:3001/videos/bob')
-		.then((res) => {
-			const {status, error, videos} = res.data;
+		if (!videos) {
+			axios.get('http://localhost:3001/videos/bob')
+			.then((res) => {
+				const {status, error, videos} = res.data;
 
-			if (status === "ok") {
-				dispatch(setVideos(videos));
-			}
-			else {
-				console.log("Couldn't fetch videos", error);
-			}
-		})
-		.catch(error => {
-			// Couldn't fetch Videos, log event
-			console.log(error);
-		});
+				if (status === "ok") {
+					dispatch(setVideos(videos));
+				}
+				else {
+					console.log("Couldn't fetch videos", error);
+				}
+			})
+			.catch(error => {
+				// Couldn't fetch Videos, log event
+				console.log(error);
+			});
+		}
 	});
 
 	return (

@@ -1,7 +1,7 @@
 import React from 'react';
 import { User } from '../../../../../common/types';
 import './Header.scss';
-import Logout from './Logout';
+import Logout from '../Logout/Logout';
 
 interface Props {
 	user: User;

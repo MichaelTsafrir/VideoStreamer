@@ -15,20 +15,20 @@ const Stream = require('node-rtsp-stream');
 // rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov
 // Outer library, has no TS definition
 let stream: any;
-// const stream = new Stream({
-// 	name: "test",
-// 	streamUrl: "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov",
-// 	wsPort: webSocketPort,
-// 	width: 600,
-// 	height: 400,
-// 	ffmpegOptions: {
-// 		'-vb': "50m",
-// 		'-stats': '',
-// 		'-r': 30,
-// 		'-tune': "film",
-// 		"-preset": "medium",
-// 	},
-// });
+stream = new Stream({
+	name: "test",
+	streamUrl: "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov",
+	wsPort: webSocketPort,
+	// width: 600,
+	// height: 400,
+	ffmpegOptions: {
+		'-vb': "50m",
+		'-stats': '',
+		'-r': 30,
+		'-tune': "film",
+		"-preset": "medium",
+	},
+});
 
 const port = process.env.PORT || 3001;
 
@@ -146,38 +146,58 @@ app.post('/startVideo', (req, res) => {
 		res.send({ status:"error", error: "videoID as body param is required"});
 	}
 	else{
-		videoModel.find({ _id: videoID})
-			.then(data => {
-				if (!data.length) {
-					res.send({ status: 'error', error: `Couldn't find videoID ${videoID}` })
-				}
-				else{
-					const video = data[0];
+		// videoModel.find({ _id: videoID})
+		// 	.then(data => {
+		// 		if (!data.length) {
+		// 			res.send({ status: 'error', error: `Couldn't find videoID ${videoID}` })
+		// 		}
+		// 		else{
+		// 			const video = data[0];
 
-					if (stream) {
-						// Kill running stream
-						stream.stop();
-					}
+		// 			if (stream) {
+		// 				// Kill running stream
+		// 				stream.stop();
+		// 			}
 	
-					stream = new Stream({
-						name: video.name,
-						streamUrl: video.url,
-						wsPort: webSocketPort,
-						width: 600,
-						height: 400,
-						ffmpegOptions: {
-							'-vb': "50m",
-							'-stats': '',
-							'-r': 30,
-							'-tune': "film",
-							"-preset": "medium",
-						},
-					});
+		// 			stream = new Stream({
+		// 				name: video.name,
+		// 				streamUrl: video.url,
+		// 				wsPort: webSocketPort,
+		// 				width: 600,
+		// 				height: 400,
+		// 				ffmpegOptions: {
+		// 					'-vb': "50m",
+		// 					'-stats': '',
+		// 					'-r': 30,
+		// 					'-tune': "film",
+		// 					"-preset": "medium",
+		// 				},
+		// 			});
 	
-					res.send({ status: 'ok' })
-				}
-			})
-			.catch(error => res.send({ status: 'error', error }));
+		// 			res.send({ status: 'ok' })
+		// 		}
+		// 	})
+		// 	.catch(error => res.send({ status: 'error', error }));
+		
+		// if (stream) {
+		// 	// Kill running stream
+		// 	stream.stop();
+		// }
+		// stream = new Stream({
+		// 	name: "test",
+		// 	streamUrl: "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov",
+		// 	wsPort: webSocketPort,
+		// 	// width: 600,
+		// 	// height: 400,
+		// 	ffmpegOptions: {
+		// 		'-vb': "50m",
+		// 		'-stats': '',
+		// 		'-r': 30,
+		// 		'-tune': "film",
+		// 		"-preset": "medium",
+		// 	},
+		// });
+		res.send({ status:"ok" });
 
 	}
 

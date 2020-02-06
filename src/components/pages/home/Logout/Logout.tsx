@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { removeUser } from '../../../../actions/user';
 import { useDispatch } from 'react-redux';
+import { removeVideos } from 'actions/videos';
 
 interface Props {};
 
@@ -15,6 +16,7 @@ const Logout: React.FC<Props> = () => {
 		const { error, status } = res.data;
 
 		if (status === "ok") {
+			dispatch(removeVideos());
 			dispatch(removeUser());
 		}
 		else {
