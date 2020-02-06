@@ -224,7 +224,14 @@ app.post('/addVideo', (req, res) => {
 			addDate: Date.now()
 		});
 
-		newVideo.save().then(() => res.send({ status: 'ok' })).catch((error) => res.send({ status: 'error', error }));
+		newVideo.save()
+		.then(() => res.send({ status: 'ok' }))
+		.catch((error) => {
+			// Log error
+			console.log(error);
+
+			res.send({ status: 'error', error: 'server failed adding video' });
+		});
 	}
 	else {
 		res.send({ status: 'error', error: 'missing params from request' })

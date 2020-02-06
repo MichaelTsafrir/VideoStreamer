@@ -23,7 +23,7 @@ const Register: React.FC<Props> = () => {
 	const [email, setEmail] = useState('');
 	const [emailError, setEmailError] = useState(false);
 	const [error, setError] = useState('');
-	const [isRegistered, setisRegistered] = useState(false);
+	const [isRegistered, setIsRegistered] = useState(false);
 
 	const setMissingFields = () => setError('Please Fill All Fields!');
 
@@ -35,7 +35,7 @@ const Register: React.FC<Props> = () => {
 		setLastnameError(false);
 		setEmailError(false);
 		setError('');
-	}
+	};
 
 	const handleClear = () => {
 		clearError();
@@ -46,10 +46,10 @@ const Register: React.FC<Props> = () => {
 		setFirstname('');		
 		setLastname('');
 		setEmail('');
-		setisRegistered(false);
+		setIsRegistered(false);
 	};
 
-	const handleSubmit = async (e: React.SyntheticEvent) => {
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
 		clearError();
@@ -103,9 +103,9 @@ const Register: React.FC<Props> = () => {
 				const { error, status, user } = res.data;
 
 				if (status === "ok") {
-					setisRegistered(true);
+					setIsRegistered(true);
 					
-					await setTimeout(() => {
+					setTimeout(() => {
 						handleClear();
 						dispatch(setUser(user));
 					}, 2000);
@@ -161,7 +161,7 @@ const Register: React.FC<Props> = () => {
 						<tr>
 							<td></td>
 							<td><label className="register-error">{error}</label></td>
-						</tr>: null
+						</tr> : null
 						}
 					</tbody>
 				</table>

@@ -9,7 +9,7 @@ interface Props {};
 const Logout: React.FC<Props> = () => {
 	const dispatch = useDispatch();
 
-	const onLogOut = async (e: React.SyntheticEvent) => {
+	const onLogOut = async (e: React.MouseEvent) => {
 		e.preventDefault();
 
 		const res = await axios.post('http://localhost:3001/logOut');

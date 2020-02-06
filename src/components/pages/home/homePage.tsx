@@ -3,6 +3,7 @@ import { RouteComponentProps, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { userSelector } from '../../../selectors';
 import Header from './Header/Header';
+import AddVideo from './AddVideo/AddVideo';
 
 interface Props extends RouteComponentProps {}
 
@@ -17,7 +18,8 @@ export const HomePage: React.FC<Props> = ({ history }) => {
 	});
 
 	return <div>
-		{ user && <Header user={user} />}
-		<Link to='/library'>library</Link> 
+		{ user && <Header user={user} /> }
+		<AddVideo />
+		<Link to='/library'>Show Library</Link> 
 	</div>
 }

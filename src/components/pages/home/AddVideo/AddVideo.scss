@@ -1,0 +1,36 @@
+.add-fields-container{
+	margin: 0 auto;
+	padding-top: 60px;
+	text-align: left;
+
+	td {
+		padding: 0 5px 10px;
+	}
+	td:nth-child(1){
+		width: 100px;
+	}
+	.add-error-wrapper {
+		width: 180px;
+		text-align: center;
+	}
+	
+	.button-fields {
+		text-align: center;
+		padding: 0;
+
+		img {
+			cursor: pointer;
+			padding: 15px 25px 0px;
+		}
+
+		img:hover {
+			opacity: 0.6;
+		}
+
+	}
+
+	.error, .add-error-wrapper {
+		color: #801212;
+		font-weight: bold;
+	}
+}

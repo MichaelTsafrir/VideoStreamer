@@ -7,7 +7,9 @@
 	td {
         padding-bottom: 5px;
     }
-
+	td:nth-child(1){
+		width: 85px;
+	}
     td:nth-child(2) {
         width: 173px;
     }

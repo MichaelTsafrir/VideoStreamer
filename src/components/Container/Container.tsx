@@ -5,7 +5,7 @@ interface Props {}
 
 const Container: React.FC<Props> = (props) => {
 	return (
-		<div className="login-container">
+		<div className="wrapper">
 			{props.children}
 		</div>
 	);

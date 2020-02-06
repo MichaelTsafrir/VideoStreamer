@@ -23,6 +23,6 @@ export const LibraryPage: React.FC<Props> = ({ match, history }) => {
 			<VideoList />
 			<Player videoID={match.params.videoID} />
 		</div>
-		<Link to='/'>Go Home</Link>
+		<Link to='/'>Add new video</Link>
 	</React.Fragment>
 }

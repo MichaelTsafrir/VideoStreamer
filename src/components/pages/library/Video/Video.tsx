@@ -14,7 +14,7 @@ const Video: React.FC<Props> = (props) => {
 	const { video } = props;
 	const history = useHistory();
 
-	const handleClick = (e: React.SyntheticEvent) => {
+	const handleClick = () => {
 		history.push(`/library/${video.id}`);
 	};
 

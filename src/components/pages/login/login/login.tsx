@@ -14,7 +14,7 @@ const Login: React.FC<Props> = () => {
 
 	const dispatch = useDispatch();
 
-	const handleSubmit = async (e: React.SyntheticEvent) => {
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
 		if (!username || ! password) {
