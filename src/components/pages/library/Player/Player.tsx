@@ -14,10 +14,16 @@ const Player: React.FC<Props> = (props) => {
 	const { videoID } = props;
 	
 	useEffect(() => {
-		if (videoID) {
+		if (videoID) {	
+			let client: WebSocket;
+
+			const closeFunction = () =>{
+				if (client)
+					client.close();
+			};
+
 			axios.post('http://localhost:3001/startVideo', { videoID: videoID })
 			.then(res => {
-				console.log("sent request to /startVideo", res);
 				const { error, status } = res.data;
 
 				if (status !== "ok") {
@@ -25,9 +31,8 @@ const Player: React.FC<Props> = (props) => {
 					console.log("Failed to start stream on server", error);
 				}
 				else {
-					console.log("create canvas", videoID);
 					const canvas = document.getElementById(videoCanvasId);
-					const client = new WebSocket('ws://localhost:3002');
+					client = new WebSocket('ws://localhost:3002');
 					new jsmpeg(client, {	
 						canvas,
 					});
@@ -36,6 +41,8 @@ const Player: React.FC<Props> = (props) => {
 				// log error
 				console.log("Failed to start stream on server", error);
 			});
+
+			return closeFunction;
 		}
 	}, [videoID]);
 	
