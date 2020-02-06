@@ -2,18 +2,19 @@ import React, { useEffect } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { setVideos } from '../../../../actions/videos';
-import { videosSelector } from '../../../../selectors';
+import { videosSelector, userSelector } from '../../../../selectors';
 import Video from '../Video/Video';
 
 import './VideoList.scss';
 
 const VideoList = () => {
 	const dispatch = useDispatch();
+	const user = useSelector(userSelector);
 	const videos = useSelector(videosSelector);
 
 	useEffect(() => {
-		if (!videos) {
-			axios.get('http://localhost:3001/videos/bob')
+		if (user && !videos) {
+			axios.get(`http://localhost:3001/videos/${user.id}`)
 			.then((res) => {
 				const {status, error, videos} = res.data;
 

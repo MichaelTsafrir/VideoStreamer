@@ -34,6 +34,8 @@
     height: 100%;
     padding-top: 65px;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 }
 
 a {

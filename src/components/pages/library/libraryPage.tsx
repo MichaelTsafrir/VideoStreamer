@@ -18,11 +18,11 @@ export const LibraryPage: React.FC<Props> = ({ match, history }) => {
 		}
 	});
 	
-	return <div>
+	return <React.Fragment>
 		<div className="video-container">
 			<VideoList />
 			<Player videoID={match.params.videoID} />
 		</div>
 		<Link to='/'>Go Home</Link>
-	</div>
+	</React.Fragment>
 }
