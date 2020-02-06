@@ -14,19 +14,21 @@ const Stream = require('node-rtsp-stream');
 
 // rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov
 // Outer library, has no TS definition
-// let stream: any;
-const stream = new Stream({
-	name: "test",
-	streamUrl: "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov",
-	wsPort: webSocketPort,
-	ffmpegOptions: {
-		'-vb': "50m",
-		'-stats': '',
-		'-r': 30,
-		'-tune': "film",
-		"-preset": "medium",
-	},
-});
+let stream: any;
+// const stream = new Stream({
+// 	name: "test",
+// 	streamUrl: "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov",
+// 	wsPort: webSocketPort,
+// 	width: 600,
+// 	height: 400,
+// 	ffmpegOptions: {
+// 		'-vb': "50m",
+// 		'-stats': '',
+// 		'-r': 30,
+// 		'-tune': "film",
+// 		"-preset": "medium",
+// 	},
+// });
 
 const port = process.env.PORT || 3001;
 
@@ -152,23 +154,25 @@ app.post('/startVideo', (req, res) => {
 				else{
 					const video = data[0];
 
-					// if (stream) {
-					// 	// Kill running stream
-					// 	stream.stop();
-					// }
+					if (stream) {
+						// Kill running stream
+						stream.stop();
+					}
 	
-					// stream = new Stream({
-					// 	name: video.name,
-					// 	streamUrl: video.url,
-					// 	wsPort: webSocketPort,
-					// 	ffmpegOptions: {
-					// 		'-vb': "50m",
-					// 		'-stats': '',
-					// 		'-r': 30,
-					// 		'-tune': "film",
-					// 		"-preset": "medium",
-					// 	},
-					// });
+					stream = new Stream({
+						name: video.name,
+						streamUrl: video.url,
+						wsPort: webSocketPort,
+						width: 600,
+						height: 400,
+						ffmpegOptions: {
+							'-vb': "50m",
+							'-stats': '',
+							'-r': 30,
+							'-tune': "film",
+							"-preset": "medium",
+						},
+					});
 	
 					res.send({ status: 'ok' })
 				}
