@@ -1,5 +1,21 @@
 .video-placeholder {
 	cursor: pointer;
+	direction: ltr;
+	padding: 0 0 8px 10px;
+	text-align: left;
+	font-size: 14px;
+	line-height: 14px;
+
+	table {
+		.info-col {
+			padding: 0 10px;
+		}
+		
+		.input-col {
+			white-space: nowrap;
+			overflow: hidden;
+		}
+	}
 
 	label {
 		cursor: pointer;

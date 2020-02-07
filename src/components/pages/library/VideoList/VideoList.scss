@@ -1,6 +1,22 @@
+$scrollbarBG: #CFD8DC;
+$thumbBG: #90A4AE;
+
 .video-list {
 	grid-area: 1 / 2 / 1 / 2;
 	overflow: auto;
-    border: 1px solid #f1f1f1;
     direction: rtl;
+	
+	&::-webkit-scrollbar {
+		width: 11px;
+	}
+	&::-webkit-scrollbar-track {
+		background: $scrollbarBG;
+		border: 3px solid $scrollbarBG;
+		border-radius: 5px;
+	}
+	&::-webkit-scrollbar-thumb {
+		background-color: $thumbBG;
+		border-radius: 5px;
+		border: 3px solid $scrollbarBG;
+	}
 }
