@@ -17,9 +17,11 @@ export const HomePage: React.FC<Props> = ({ history }) => {
 		}
 	});
 
-	return <div>
-		{ user && <Header user={user} /> }
-		<AddVideo />
-		<Link to='/library'>Show Library</Link> 
-	</div>
+	return (
+		<React.Fragment>
+			{ user && <Header user={user} /> }
+			<AddVideo />
+			<Link to='/library'>Show Library</Link> 
+		</React.Fragment>
+	);
 }

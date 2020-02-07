@@ -1,12 +1,9 @@
-.home-header {
-	border: 1px solid white;
-    border-radius: 5px;
-    width: 90%;
-    margin: auto;
-    position: relative;
+.username-header {
+    position: absolute;
+    top: 30px;
+    right: 50px;
 
-    input {
-        position: absolute;
-        right: 35px;
+    username-label {
+        font-size: 20;
     }
 };

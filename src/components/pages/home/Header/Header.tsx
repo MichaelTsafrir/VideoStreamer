@@ -9,8 +9,8 @@ interface Props {
 
 const Header: React.FC<Props> = (props) => {
 	return (
-		<div className='home-header'>
-			Welcome, {props.user.firstname}
+		<div className='username-header'>
+			<label className="username-label">{props.user.username}</label>
 			<Logout /> 
 		</div>
 	);

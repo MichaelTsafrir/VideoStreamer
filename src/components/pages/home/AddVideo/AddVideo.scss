@@ -21,11 +21,12 @@
 		img {
 			cursor: pointer;
 			padding: 15px 25px 0px;
+			
+			&:hover {
+				opacity: 0.6;
+			}
 		}
 
-		img:hover {
-			opacity: 0.6;
-		}
 
 	}
 

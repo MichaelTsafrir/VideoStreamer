@@ -1,0 +1,9 @@
+.logout-button{
+	cursor: pointer;
+	vertical-align: middle;
+    padding: 0 0 5px 3px;
+
+	&:hover {
+		opacity: 0.6;
+	}
+}

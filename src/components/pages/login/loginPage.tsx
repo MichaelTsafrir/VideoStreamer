@@ -21,5 +21,5 @@ export const LoginPage: React.FC<Props> = ({ history }) => {
 			<Login />
 			<Link to='/register' className="register-link">Not a user? <u>Register</u> now!</Link> 
 		</React.Fragment>
-	)
+	);
 };

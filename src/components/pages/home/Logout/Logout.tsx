@@ -4,12 +4,15 @@ import { removeUser } from '../../../../actions/user';
 import { useDispatch } from 'react-redux';
 import { removeVideos } from 'actions/videos';
 
+import LogOutButton from '../../../../images/logout-button.png';
+import './Logout.scss';
+
 interface Props {};
 
 const Logout: React.FC<Props> = () => {
 	const dispatch = useDispatch();
 
-	const onLogOut = async (e: React.MouseEvent) => {
+	const handleLogOut = async (e: React.MouseEvent) => {
 		e.preventDefault();
 
 		const res = await axios.post('http://localhost:3001/logOut');
@@ -26,7 +29,7 @@ const Logout: React.FC<Props> = () => {
 	};
 
 	return (
-		<input type="button" onClick={onLogOut} value="Log Out" />
+		<img className="logout-button" src={LogOutButton} onClick={handleLogOut} alt="Log Out" title="Log Out" />
 	);
 };
 

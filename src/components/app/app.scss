@@ -1,44 +1,44 @@
-.App {
+.app {
 	text-align: center;
 	height: 100vh;
 	background: #303d42;
 	color: white;
-}
 
-.App-logo {
-	position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    height: 143px;
-    z-index: 10;
-}
+    .app-logo {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        height: 143px;
+        z-index: 10;
+    }
 
-.App-header {
-	padding-bottom: 20px;
-}
+    .container {
+        $space-from-top: 80px;
+        background: #0f8271;
+        height: calc(100vh - 2 * #{$space-from-top});
+        position: absolute;
+        left: 5%;
+        width: 90%;
+        top: $space-from-top;
+        border-radius: 65px;
+        box-shadow: #4644d4 0px 0px 50px -35px;
+        overflow: hidden;
 
-.Container {
-    $space-from-top: 80px;
-	background: #0f8271;
-    height: calc(100vh - 2 * #{$space-from-top});
-    position: absolute;
-    left: 5%;
-    width: 90%;
-    top: $space-from-top;
-    border-radius: 65px;
-    box-shadow: #4644d4 0px 0px 50px -35px;
-    overflow: hidden;
-}
+        .app-header {
+            padding-bottom: 20px;
+        }
 
-.Main {
-    height: 100%;
-    padding-top: 65px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-}
+        .main {
+            height: 100%;
+            padding-top: 65px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
 
-a {
-    color: white;
-    text-decoration: none;
+            a {
+                color: white;
+                text-decoration: none;
+            }
+        }
+    }
 }
