@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { userSelector } from '../../../selectors';
 import Player from './Player/Player';
 import './LibraryPage.scss';
+import Header from '../home/Header/Header';
 
 interface Props extends RouteComponentProps<{ videoID: string }> {}
 
@@ -20,6 +21,7 @@ export const LibraryPage: React.FC<Props> = ({ match, history }) => {
 	
 	return (
 		<React.Fragment>
+			{ user && <Header user={user} /> }
 			<div className="video-container">
 				<VideoList />
 				<Player videoID={match.params.videoID} />

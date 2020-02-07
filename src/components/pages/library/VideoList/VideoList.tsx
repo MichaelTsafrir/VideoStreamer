@@ -13,7 +13,7 @@ const VideoList = () => {
 	const videos = useSelector(videosSelector);
 
 	useEffect(() => {
-		if (user && !videos) {
+		if (user) {
 			axios.get(`http://localhost:3001/videos/${user.id}`)
 			.then((res) => {
 				const {status, error, videos} = res.data;
@@ -30,7 +30,7 @@ const VideoList = () => {
 				console.log(error);
 			});
 		}
-	});
+	}, []);
 
 	return (
 		<div className="video-list">
