@@ -181,31 +181,52 @@ app.post('/startVideo', (req, res) => {
 
 });
 
-app.post('/register', (req, res) => {
+app.post('/register', async (req, res) => {
 	const { username, password, firstname, lastname, email } = req.body;
 
 	if ( username && password && firstname && lastname && email) {
-		const newUser = new userModel({
-			username,
-			password,
-			firstname,
-			lastname,
-			email,
-		});
-
-		newUser.save()
-		.then(() => {
-			// Save to session
-			if (req.session) {
-				req.session.user = newUser;
+		try{
+			const data = await userModel.find({ username });
+			
+			if (!!data.length) {
+				res.send({ status: 'error', error: 'username already exists' })
 			}
 			else {
-				console.error('Session is not set')
-			}
+				const newUser = new userModel({
+					username,
+					password,
+					firstname,
+					lastname,
+					email,
+				});
+		
+				try {
+					await newUser.save();
+					
+					// Save to session
+					if (req.session) {
+						req.session.user = newUser;
+					}
+					else {
+						console.error('Session is not set')
+					}
+		
+					res.send({ status: 'ok', user: newUser })
+				}
+				catch(error) {
+					// Log error
+					console.log(error);
 
-			res.send({ status: 'ok', user: newUser })
-		})
-		.catch((error) => res.send({ status: 'error', error }));
+					res.send({ status: 'error', error: 'server failed registering user' });
+				};
+			}
+		}
+		catch(error) {
+			// Log error
+			console.log(error);
+
+			res.send({ status: 'error', error: 'server failed registering user' });
+		};	
 	}
 	else {
 		res.send({ status: 'error', error: 'missing params from request' })
