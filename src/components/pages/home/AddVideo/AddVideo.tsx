@@ -24,7 +24,7 @@ const AddVideo: React.FC<Props> = () => {
 	const [urlError, setUrlError] = useState(false);
 	const [descriptionError, setDescriptionError] = useState(false);
 	
-	const setMissingFields = () => setError('Please Fill All Fields!');
+	const setMissingFields = async () => setError('Please Fill All Fields!');
 
 	const clearError = () => {
 		setNameError(false);
@@ -63,7 +63,9 @@ const AddVideo: React.FC<Props> = () => {
 			setDescriptionError(true);
 		}
 
-		if (!error && user) {
+		// Sidenote: setState is asynchronous so we can't rely on error param when checking for errors
+		if (name && url && description && user) {
+			console.log(error)
 			try {
 				const res = await axios.post('http://localhost:3001/addVideo', {
 					name,

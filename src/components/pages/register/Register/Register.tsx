@@ -54,43 +54,52 @@ const Register: React.FC<Props> = () => {
 
 		clearError();
 
+		let canRegister = true;
+
 		if (!username) {
 			setMissingFields();
 			setUsernameError(true);
+			canRegister = false;
 		}
 
 		if (!password) {
 			setMissingFields();
 			setPasswordError(true);
+			canRegister = false;
 		}
 
 		if (!passwordConf) {
 			setMissingFields();
 			setPasswordConfError(true);
+			canRegister = false;
 		}
 
 		if (!firstname) {
 			setMissingFields();
 			setFirstnameError(true);
+			canRegister = false;
 		}
 
 		if (!lastname) {
 			setMissingFields();
 			setLastnameError(true);
+			canRegister = false;
 		}
 
 		if (!email) {
 			setMissingFields();
 			setEmailError(true);
+			canRegister = false;
 		}
 
 		if (password !== passwordConf) {
 			setError('Passwords Don\'t Match!')
 			setPasswordError(true);
 			setPasswordConfError(true);
+			canRegister = false;
 		}
 
-		if (!error) {
+		if (canRegister) {
 			try {
 				const res = await axios.post('http://localhost:3001/register', {
 					username,
