@@ -14,13 +14,11 @@ const Stream = require('node-rtsp-stream');
 
 // rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov
 // Outer library, has no TS definition
-let stream: any;
+// let stream: any;
 // stream = new Stream({
 // 	name: "test",
 // 	streamUrl: "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov",
 // 	wsPort: webSocketPort,
-// 	// width: 600,
-// 	// height: 400,
 // 	ffmpegOptions: {
 // 		'-vb': "50m",
 // 		'-stats': '',
@@ -163,6 +161,26 @@ app.get('/videos/:userID', async (req, res) => {
 	}
 });
 
+// // Check if stream already exists
+// if (stream) {
+// 	// Kill running stream
+// 	stream.stop();
+// }
+
+let stream: any;
+stream = new Stream({
+	name: "test",
+	streamUrl: "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov",
+	wsPort: webSocketPort,
+	ffmpegOptions: {
+		'-vb': "50m",
+		'-stats': '',
+		'-r': 30,
+		'-tune': "film",
+		"-preset": "medium",
+	},
+});
+
 app.post('/startVideo', async (req, res) => {
 	const { videoID } = req.body;
 
@@ -183,24 +201,25 @@ app.post('/startVideo', async (req, res) => {
 				const video = data[0];
 
 				// Check if stream already exists
-				if (stream) {
-					// Kill running stream
-					stream.stop();
-				}
+				// if (stream) {
+				// 	// Kill running stream
+				// 	stream.stop();
+				// }
 
 				// Create a new stream through web socket
-				stream = new Stream({
-					name: video.name,
-					streamUrl: video.url,
-					wsPort: webSocketPort,
-					ffmpegOptions: {
-						'-vb': "50m",
-						'-stats': '',
-						'-r': 30,
-						'-tune': "film",
-						"-preset": "medium",
-					},
-				});
+				// if (! stream)
+				// 	stream = new Stream({
+				// 		name: "test",
+				// 		streamUrl: "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov",
+				// 		wsPort: webSocketPort,
+				// 		ffmpegOptions: {
+				// 			'-vb': "50m",
+				// 			'-stats': '',
+				// 			'-r': 30,
+				// 			'-tune': "film",
+				// 			"-preset": "medium",
+				// 		},
+				// 	});
 
 				res.send({ status: 'ok' })
 			}
@@ -208,8 +227,6 @@ app.post('/startVideo', async (req, res) => {
 		catch(error) {
 			res.send({ status: 'error', error });
 		};
-
-		res.send({ status:"ok" });
 	}
 
 });
