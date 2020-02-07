@@ -10,6 +10,7 @@
 			"sourceMaps": true,
 			"cwd": "${workspaceRoot}",
 			"protocol": "inspector",
+			"env": { "TS_NODE_PROJECT": "${workspaceRoot}/server/tsconfig.json" }
 		},
 		{
 			"name": "React",
