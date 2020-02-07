@@ -1,4 +1,10 @@
 .video-container {
-	flex: 1;
+	display: grid;
+    grid-template-columns: 20px 420px auto;
+    grid-template-rows: auto 30px;
     overflow: hidden;
+
+    .player-container{
+        grid-area: 1 / 1 / 1 / 4;
+    }
 }

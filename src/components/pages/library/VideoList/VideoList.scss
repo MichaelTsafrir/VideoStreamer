@@ -1,6 +1,6 @@
 .video-list {
-	width: 30%;
+	grid-area: 1 / 2 / 1 / 2;
 	overflow: auto;
-	height: 100%;
+    border: 1px solid #f1f1f1;
     direction: rtl;
 }

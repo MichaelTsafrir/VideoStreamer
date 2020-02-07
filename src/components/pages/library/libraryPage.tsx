@@ -6,6 +6,7 @@ import { userSelector } from '../../../selectors';
 import Player from './Player/Player';
 import './LibraryPage.scss';
 import Header from '../home/Header/Header';
+import Container from 'components/Container/Container';
 
 interface Props extends RouteComponentProps<{ videoID: string }> {}
 
@@ -24,9 +25,13 @@ export const LibraryPage: React.FC<Props> = ({ match, history }) => {
 			{ user && <Header user={user} /> }
 			<div className="video-container">
 				<VideoList />
-				<Player videoID={match.params.videoID} />
+				<div className="player-container">
+					<Container>
+						<Player videoID={match.params.videoID} />
+					</Container>
+					<Link to='/'>Add new video</Link>
+				</div>
 			</div>
-			<Link to='/'>Add new video</Link>
 		</React.Fragment>
 	);
 }
