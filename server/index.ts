@@ -58,51 +58,62 @@ app.use(session({
 	resave: false,
 }));
 
-app.get('/', (req, res) => {
-	res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
-
-app.post('/auth', (req, res) => {
+app.post('/auth', async (req, res) => {
 	const { username, password } = req.body;
 
+	// Check whether parameters were attached to request
 	if (!username || !password) {
 		res.send({ status: 'error', error: 'missing params from request' });
 	}
 	else {
-		userModel.find({ username, password }).limit(1)
-			.then((data) => {
-				if (!data || !data.length) {
-					res.send({ status: 'error', error: 'Wrong username or password'});
+		try {
+			// Fetch user
+			const data = await userModel.find({ username, password }).limit(1);
+			
+			// Check if user was found
+			if (!data || !data.length) {
+				res.send({ status: 'error', error: 'Wrong username or password'});
+			}
+			else {
+				const {
+					id,
+					username,
+					firstname,
+					lastname,
+					email,
+				} = data[0];
+
+				// Create a User object from the server data
+				const user: User = {
+					id,
+					username,
+					firstname,
+					lastname,
+					email,
+				};
+
+				// Save login session
+				if (req.session) {
+					req.session.user = user;
+					req.session.save((err) => {
+						if (err) {
+							// Couldn't save session, Log error
+							console.error('Couldn\'t save session', err);
+						}
+						else
+							console.log(req.session);
+					});
 				}
 				else {
-					const user: User = {
-						id: data[0].id,
-						username: data[0].username,
-						firstname: data[0].firstname,
-						lastname: data[0].lastname,
-						email: data[0].email,
-					};
-
-					// Save login session
-					if (req.session) {
-						req.session.user = user;
-						req.session.save((err) => {
-							if (err) {
-								// Couldn't save session, Log error
-								console.error('Couldn\'t save session', err);
-							}
-							else
-								console.log(req.session);
-						});
-					}
-					else {
-						console.error('Session is not set')
-					}
-
-					res.send({ status: 'ok', user: user});
+					console.error('Session is not set')
 				}
-			})
-			.catch((error) => res.send({ status: 'error', error }));
+
+				res.send({ status: 'ok', user: user});
+			}
+		}
+		catch(error) {
+			res.send({ status: 'error', error });
+		};
 	}
 });
 
@@ -110,7 +121,7 @@ app.post('/logOut', (req, res) => {
 	if (req.session) {
 		// Destroy login session
 		req.session.destroy(error => {
-			// send feedback whether it was destroyed
+			// Send feedback whether it was destroyed
 			error ? res.send({ status: 'error', error }) : res.send({ status: 'ok' });
 		});
 	}
@@ -119,11 +130,19 @@ app.post('/logOut', (req, res) => {
 	}
 });
 
-app.get('/videos/:userID', (req, res) => {
+app.get('/videos/:userID', async (req, res) => {
 	const { userID } = req.params;
 
-	videoModel.find({ byUser: userID })
-		.then(data => {
+	// Check whether userID was attached to request
+	if (!userID) {
+		res.send({ status:"error", error: "userID as param is required"});
+	}
+	else {
+		try {
+			// Fetch all videos for requested user
+			const data = await videoModel.find({ byUser: userID });
+
+			// Create a Video object from server's data
 			const videos: Video[] = data.map(({id, name, description, url, byUser, addDate}) => ({
 				id,
 				name,
@@ -134,47 +153,61 @@ app.get('/videos/:userID', (req, res) => {
 			}));
 
 			res.send({ status: 'ok', videos });
-		})
-		.catch(error => res.send({ status: 'error', error }));
+		}
+		catch(error) {
+			// Log error
+			console.log(error);
+
+			res.send({ status: 'error', error: 'server failed fetching videos' });
+		}
+	}
 });
 
-app.post('/startVideo', (req, res) => {
+app.post('/startVideo', async (req, res) => {
 	const { videoID } = req.body;
 
+	// Check if Video ID was attached in the request
 	if (!videoID) {
 		res.send({ status:"error", error: "videoID as body param is required"});
 	}
 	else{
-		videoModel.find({ _id: videoID})
-			.then(data => {
-				if (!data.length) {
-					res.send({ status: 'error', error: `Couldn't find videoID ${videoID}` })
-				}
-				else{
-					const video = data[0];
+		try {
+			// Fetch video by ID
+			const data = await videoModel.find({ _id: videoID});
+			
+			// Check if video was found
+			if (!data.length) {
+				res.send({ status: 'error', error: `Couldn't find videoID ${videoID}` })
+			}
+			else{
+				const video = data[0];
 
-					if (stream) {
-						// Kill running stream
-						stream.stop();
-					}
-	
-					stream = new Stream({
-						name: video.name,
-						streamUrl: video.url,
-						wsPort: webSocketPort,
-						ffmpegOptions: {
-							'-vb': "50m",
-							'-stats': '',
-							'-r': 30,
-							'-tune': "film",
-							"-preset": "medium",
-						},
-					});
-	
-					res.send({ status: 'ok' })
+				// Check if stream already exists
+				if (stream) {
+					// Kill running stream
+					stream.stop();
 				}
-			})
-			.catch(error => res.send({ status: 'error', error }));
+
+				// Create a new stream through web socket
+				stream = new Stream({
+					name: video.name,
+					streamUrl: video.url,
+					wsPort: webSocketPort,
+					ffmpegOptions: {
+						'-vb': "50m",
+						'-stats': '',
+						'-r': 30,
+						'-tune': "film",
+						"-preset": "medium",
+					},
+				});
+
+				res.send({ status: 'ok' })
+			}
+		}
+		catch(error) {
+			res.send({ status: 'error', error });
+		};
 
 		res.send({ status:"ok" });
 	}
@@ -184,14 +217,18 @@ app.post('/startVideo', (req, res) => {
 app.post('/register', async (req, res) => {
 	const { username, password, firstname, lastname, email } = req.body;
 
+	// Check if all parameters were attached to request
 	if ( username && password && firstname && lastname && email) {
-		try{
+		try {
+			// Fetch user with requested username
 			const data = await userModel.find({ username });
 			
+			// Check whether data was found
 			if (!!data.length) {
 				res.send({ status: 'error', error: 'username already exists' })
 			}
 			else {
+				// Create new User document for mongo
 				const newUser = new userModel({
 					username,
 					password,
@@ -201,6 +238,7 @@ app.post('/register', async (req, res) => {
 				});
 		
 				try {
+					// Save user in mongo
 					await newUser.save();
 					
 					// Save to session
@@ -233,10 +271,12 @@ app.post('/register', async (req, res) => {
 	}
 });
 
-app.post('/addVideo', (req, res) => {
+app.post('/addVideo', async (req, res) => {
 	const { name, description, url, byUser } = req.body;
 
+	// Check if all parameters were attached to request
 	if ( name && description && url && byUser) {
+		// Create a new video document for mongo
 		const newVideo = new videoModel({
 			name,
 			description,
@@ -245,14 +285,18 @@ app.post('/addVideo', (req, res) => {
 			addDate: Date.now()
 		});
 
-		newVideo.save()
-		.then(() => res.send({ status: 'ok' }))
-		.catch((error) => {
+		try {
+			// Save document in mongo
+			await newVideo.save()
+			
+			res.send({ status: 'ok' });
+		}
+		catch(error) {
 			// Log error
 			console.log(error);
 
 			res.send({ status: 'error', error: 'server failed adding video' });
-		});
+		};
 	}
 	else {
 		res.send({ status: 'error', error: 'missing params from request' })
