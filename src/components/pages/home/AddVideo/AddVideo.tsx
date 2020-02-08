@@ -81,7 +81,7 @@ const AddVideo: React.FC<Props> = () => {
 					description,
 					url,
 					byUser: user.id,
-				});
+				}, { withCredentials: true });
 
 				const { error, status } = res.data;
 

@@ -101,13 +101,17 @@ const Register: React.FC<Props> = () => {
 
 		if (canRegister) {
 			try {
-				const res = await axios.post('http://localhost:3001/register', {
+				const res = await axios.post(
+					'http://localhost:3001/register',
+					{
 					username,
 					password,
 					firstname,
 					lastname,
 					email,
-				});
+					},
+					{ withCredentials: true },
+				);
 
 				const { error, status, user } = res.data;
 

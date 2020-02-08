@@ -22,7 +22,7 @@ const Login: React.FC<Props> = () => {
 		}
 		else {
 			try {
-				const res = await axios.post('http://localhost:3001/auth', { username, password });
+				const res = await axios.post('http://localhost:3001/auth', { username, password }, { withCredentials: true });
 				const { error, user } = res.data;
 
 				if (error) { 

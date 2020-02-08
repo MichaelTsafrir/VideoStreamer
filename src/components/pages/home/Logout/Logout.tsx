@@ -15,7 +15,7 @@ const Logout: React.FC<Props> = () => {
 	const handleLogOut = async (e: React.MouseEvent) => {
 		e.preventDefault();
 
-		const res = await axios.post('http://localhost:3001/logOut');
+		const res = await axios.post('http://localhost:3001/logOut', undefined, { withCredentials: true });
 		const { error, status } = res.data;
 
 		if (status === "ok") {

@@ -21,7 +21,11 @@ const Player: React.FC<Props> = (props) => {
 
 			const closeFunction = () => client && client.close();
 
-			axios.post('http://localhost:3001/startVideo', { videoID: videoID }, { cancelToken: reqCancelToken.token })
+			axios.post(
+				'http://localhost:3001/startVideo',
+				{ videoID: videoID },
+				{ cancelToken: reqCancelToken.token, withCredentials: true }
+			)
 			.then(res => {
 				const { error, status } = res.data;
 

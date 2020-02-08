@@ -14,7 +14,7 @@ const VideoList = () => {
 
 	useEffect(() => {
 		if (user) {
-			axios.get(`http://localhost:3001/videos/${user.id}`)
+			axios.get(`http://localhost:3001/videos/${user.id}`, { withCredentials: true })
 			.then((res) => {
 				const {status, error, videos} = res.data;
 

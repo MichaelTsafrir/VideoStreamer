@@ -3,7 +3,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import session from 'express-session';
 import mongoose from 'mongoose';
-import path from 'path';
+import connectMongo from 'connect-mongo';
 import { User, Video } from '../common/types';
 import { webSocketPort } from '../common/common';
 
@@ -15,18 +15,18 @@ const Stream = require('node-rtsp-stream');
 // rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov
 // Outer library, has no TS definition
 // let stream: any;
-// stream = new Stream({
-// 	name: "test",
-// 	streamUrl: "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov",
-// 	wsPort: webSocketPort,
-// 	ffmpegOptions: {
-// 		'-vb': "50m",
-// 		'-stats': '',
-// 		'-r': 30,
-// 		'-tune': "film",
-// 		"-preset": "medium",
-// 	},
-// });
+const stream = new Stream({
+	name: "test",
+	streamUrl: "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov",
+	wsPort: webSocketPort,
+	ffmpegOptions: {
+		'-vb': "50m",
+		'-stats': '',
+		'-r': 30,
+		'-tune': "film",
+		"-preset": "medium",
+	},
+});
 
 const port = process.env.PORT || 3001;
 
@@ -34,6 +34,9 @@ const app = express();
 
 // Create mongo connection
 mongoose.connect('mongodb://localhost/videostreamer', { useNewUrlParser: true, useUnifiedTopology: true });
+
+// Connect the session to be stored on mongo
+const MongoStore = connectMongo(session);
 
 const db = mongoose.connection;
 
@@ -43,17 +46,22 @@ db.once('open', () => {
 	console.log("Connected to mongo");
 });
 
+
 // Allow Cross-Origin
-app.use(cors());
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
 // Use bodyParser Middleware to fetch body params
 app.use(bodyParser.json());
 
-// Use session middleware
+// Use session middleware with mongo
 app.use(session({
 	secret: 'SuperSecret',
 	saveUninitialized: false,
 	resave: false,
+	store: new MongoStore({
+		mongooseConnection: db,
+		ttl: 60 * 60 * 5, // set expiration for 5 hours
+	}),
 }));
 
 app.post('/auth', async (req, res) => {
@@ -93,20 +101,15 @@ app.post('/auth', async (req, res) => {
 				// Save login session
 				if (req.session) {
 					req.session.user = user;
-					req.session.save((err) => {
-						if (err) {
-							// Couldn't save session, Log error
-							console.error('Couldn\'t save session', err);
-						}
-						else
-							console.log(req.session);
-					});
+					req.session.test = true;
+
+					console.log('created new user', user, req.session.user); // TODO: delete
+					res.send({ status: 'ok', user: req.session.user});
 				}
 				else {
 					console.error('Session is not set')
+					res.send({ status: 'error', error: 'could not create session'});
 				}
-
-				res.send({ status: 'ok', user: user});
 			}
 		}
 		catch(error) {
@@ -116,48 +119,53 @@ app.post('/auth', async (req, res) => {
 });
 
 app.post('/logOut', (req, res) => {
-	if (req.session) {
-		// Destroy login session
-		req.session.destroy(error => {
-			// Send feedback whether it was destroyed
-			error ? res.send({ status: 'error', error }) : res.send({ status: 'ok' });
-		});
+	if (req.session && req.session.user) {
+		// Delete login session
+		delete req.session.user;
+
+		res.send({ status: 'ok' });
 	}
 	else {
-		res.send({ status: 'ok' });
+		res.send({ status: 'error', error: 'trying to log out when no user is logged in' });
 	}
 });
 
 app.get('/videos/:userID', async (req, res) => {
-	const { userID } = req.params;
+	// Check if user is logged in
+	if (req.session && req.session.user) {
+		const { userID } = req.params;
 
-	// Check whether userID was attached to request
-	if (!userID) {
-		res.send({ status:"error", error: "userID as param is required"});
+		// Check whether userID was attached to request
+		if (!userID) {
+			res.send({ status: 'error', error: "userID as param is required"});
+		}
+		else {
+			try {
+				// Fetch all videos for requested user
+				const data = await videoModel.find({ byUser: userID });
+
+				// Create a Video object from server's data
+				const videos: Video[] = data.map(({id, name, description, url, byUser, addDate}) => ({
+					id,
+					name,
+					description,
+					url,
+					byUser,
+					addDate,
+				}));
+
+				res.send({ status: 'ok', videos });
+			}
+			catch(error) {
+				// Log error
+				console.log(error);
+
+				res.send({ status: 'error', error: 'server failed fetching videos' });
+			}
+		}
 	}
 	else {
-		try {
-			// Fetch all videos for requested user
-			const data = await videoModel.find({ byUser: userID });
-
-			// Create a Video object from server's data
-			const videos: Video[] = data.map(({id, name, description, url, byUser, addDate}) => ({
-				id,
-				name,
-				description,
-				url,
-				byUser,
-				addDate,
-			}));
-
-			res.send({ status: 'ok', videos });
-		}
-		catch(error) {
-			// Log error
-			console.log(error);
-
-			res.send({ status: 'error', error: 'server failed fetching videos' });
-		}
+		res.send({ status: 'error', error: "Unauthorized: User not signed in" });
 	}
 });
 
@@ -167,66 +175,72 @@ app.get('/videos/:userID', async (req, res) => {
 // 	stream.stop();
 // }
 
-let stream: any;
-stream = new Stream({
-	name: "test",
-	streamUrl: "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov",
-	wsPort: webSocketPort,
-	ffmpegOptions: {
-		'-vb': "50m",
-		'-stats': '',
-		'-r': 30,
-		'-tune': "film",
-		"-preset": "medium",
-	},
-});
+// let stream: any;
+// stream = new Stream({
+// 	name: "test",
+// 	streamUrl: "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov",
+// 	wsPort: webSocketPort,
+// 	ffmpegOptions: {
+// 		'-vb': "50m",
+// 		'-stats': '',
+// 		'-r': 30,
+// 		'-tune': "film",
+// 		"-preset": "medium",
+// 	},
+// });
 
 app.post('/startVideo', async (req, res) => {
-	const { videoID } = req.body;
+	// Check if user is logged in
+	if (req.session && req.session.user) {
+		const { videoID } = req.body;
 
-	// Check if Video ID was attached in the request
-	if (!videoID) {
-		res.send({ status:"error", error: "videoID as body param is required"});
-	}
-	else{
-		try {
-			// Fetch video by ID
-			const data = await videoModel.find({ _id: videoID});
-			
-			// Check if video was found
-			if (!data.length) {
-				res.send({ status: 'error', error: `Couldn't find videoID ${videoID}` })
-			}
-			else{
-				const video = data[0];
-
-				// Check if stream already exists
-				// if (stream) {
-				// 	// Kill running stream
-				// 	stream.stop();
-				// }
-
-				// Create a new stream through web socket
-				// if (! stream)
-				// 	stream = new Stream({
-				// 		name: "test",
-				// 		streamUrl: "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov",
-				// 		wsPort: webSocketPort,
-				// 		ffmpegOptions: {
-				// 			'-vb': "50m",
-				// 			'-stats': '',
-				// 			'-r': 30,
-				// 			'-tune': "film",
-				// 			"-preset": "medium",
-				// 		},
-				// 	});
-
-				res.send({ status: 'ok' })
-			}
+		// Check if Video ID was attached in the request
+		if (!videoID) {
+			res.send({ status:"error", error: "videoID as body param is required"});
 		}
-		catch(error) {
-			res.send({ status: 'error', error });
-		};
+		else{
+			try {
+				// Fetch video by ID
+				const data = await videoModel.find({ _id: videoID});
+				
+				// Check if video was found
+				if (!data.length) {
+					res.send({ status: 'error', error: `Couldn't find videoID ${videoID}` })
+				}
+				else{
+					const video = data[0];
+
+					// Check if stream already exists
+					// if (stream) {
+					// 	// Kill running stream
+					// 	stream.stop();
+					// }
+
+					// Create a new stream through web socket
+					// if (! stream)
+					// 	stream = new Stream({
+					// 		name: "test",
+					// 		streamUrl: "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov",
+					// 		wsPort: webSocketPort,
+					// 		ffmpegOptions: {
+					// 			'-vb': "50m",
+					// 			'-stats': '',
+					// 			'-r': 30,
+					// 			'-tune': "film",
+					// 			"-preset": "medium",
+					// 		},
+					// 	});
+
+					res.send({ status: 'ok' })
+				}
+			}
+			catch(error) {
+				res.send({ status: 'error', error });
+			};
+		}
+	}
+	else {
+		res.send({ status: 'error', error: "Unauthorized: User not signed in" });
 	}
 
 });
@@ -261,6 +275,7 @@ app.post('/register', async (req, res) => {
 					// Save to session
 					if (req.session) {
 						req.session.user = newUser;
+						console.log('created new user', newUser); // TODO: delete
 					}
 					else {
 						console.error('Session is not set')
@@ -289,34 +304,40 @@ app.post('/register', async (req, res) => {
 });
 
 app.post('/addVideo', async (req, res) => {
-	const { name, description, url, byUser } = req.body;
+	// Check if user is logged in
+	if (req.session && req.session.user) {
+		const { name, description, url, byUser } = req.body;
 
-	// Check if all parameters were attached to request
-	if ( name && description && url && byUser) {
-		// Create a new video document for mongo
-		const newVideo = new videoModel({
-			name,
-			description,
-			url,
-			byUser,
-			addDate: Date.now()
-		});
+		// Check if all parameters were attached to request
+		if ( name && description && url && byUser) {
+			// Create a new video document for mongo
+			const newVideo = new videoModel({
+				name,
+				description,
+				url,
+				byUser,
+				addDate: Date.now()
+			});
 
-		try {
-			// Save document in mongo
-			await newVideo.save()
-			
-			res.send({ status: 'ok' });
+			try {
+				// Save document in mongo
+				await newVideo.save()
+				
+				res.send({ status: 'ok' });
+			}
+			catch(error) {
+				// Log error
+				console.log(error);
+
+				res.send({ status: 'error', error: 'server failed adding video' });
+			};
 		}
-		catch(error) {
-			// Log error
-			console.log(error);
-
-			res.send({ status: 'error', error: 'server failed adding video' });
-		};
+		else {
+			res.send({ status: 'error', error: 'missing params from request' })
+		}
 	}
 	else {
-		res.send({ status: 'error', error: 'missing params from request' })
+		res.send({ status: 'error', error: "Unauthorized: User not signed in" });
 	}
 });
 
