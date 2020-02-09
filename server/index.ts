@@ -180,6 +180,8 @@ app.get('/videos/:userID', async (req, res) => {
 	}
 });
 
+let wsCounter = 3002;
+
 app.post('/startVideo', async (req, res) => {
 	// Check if user is logged in
 	if (req.session && req.session.user) {
@@ -202,18 +204,17 @@ app.post('/startVideo', async (req, res) => {
 					const video = data[0];
 
 					// Check if stream already exists
-					/*if (stream) {
-						// Kill running stream
-						stream.mpeg1Muxer.stream.kill();
-						stream.wsServer.close();
-						stream.stop();
-					}*/
+					// if (stream) {
+					// 	stream.stop();
+					// }
 
 					// Create a new stream through web socket
 					stream = new Stream({
 						name: video.name,
 						streamUrl: video.url,
-						wsPort: webSocketPort,
+						height: 240,
+						width: 320,
+						wsPort: wsCounter,
 						ffmpegOptions: {
 							'-vb': "50m",
 							'-stats': '',
@@ -222,14 +223,13 @@ app.post('/startVideo', async (req, res) => {
 							"-preset": "medium",
 						},
 					});
-					
 
 					// Kill Player if WS error occurs
 					stream.wsServer.on('error', function() {
 						stream.mpeg1Muxer.stream.kill();
 					});
 
-					res.send({ status: 'ok' })
+					res.send({ status: 'ok', port: wsCounter++ });
 				}
 			}
 			catch(error) {

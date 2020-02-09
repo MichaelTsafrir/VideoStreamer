@@ -29,19 +29,19 @@ const Player: React.FC<Props> = (props) => {
 				{ cancelToken: reqCancelToken.token, withCredentials: true }
 			)
 			.then(res => {
-				const { error, status } = res.data;
+				const { error, status, port } = res.data;
 
-				if (status !== "ok") {
-					// log error
-					console.log("Failed to start stream on server", error);
-				}
-				else {
+				if (status === "ok") {
 					// Create a new web socket and a canvas for the video
-					client = new WebSocket('ws://localhost:3002');
+					client = new WebSocket(`ws://localhost:${port}`);
 					const canvas = document.getElementById(videoCanvasId);
 					new jsmpeg(client, {	
 						canvas,
 					});
+				}
+				else {
+					// log error
+					console.log("Failed to start stream on server", error);
 				}
 			}).catch(error => {
 				// log error
@@ -54,7 +54,7 @@ const Player: React.FC<Props> = (props) => {
 	}, [videoID]);
 	
 	return (
-		<div className="jsmpeg" data-url="ws://localhost:3002">
+		<div className="jsmpeg">
 			<canvas ref={playerRef} id={videoCanvasId}></canvas>
 		</div>
 	);

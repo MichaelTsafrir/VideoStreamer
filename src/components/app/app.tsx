@@ -45,6 +45,7 @@ const App: React.FC = () => {
 		.catch(error => {
 			// error occured, log event
 			console.log("Error on checking login session from server", error);
+			setInit(true);
 		});
 	}, []);
 
