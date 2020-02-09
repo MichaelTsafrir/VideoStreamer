@@ -30,7 +30,7 @@ const VideoList = () => {
 				console.log(error);
 			});
 		}
-	}, []);
+	}, [dispatch, user]);
 
 	return (
 		<div className="video-list">

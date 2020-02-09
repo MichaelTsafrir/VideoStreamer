@@ -103,7 +103,6 @@ app.post('/auth', async (req, res) => {
 					req.session.user = user;
 					req.session.test = true;
 
-					console.log('created new user', user, req.session.user); // TODO: delete
 					res.send({ status: 'ok', user: req.session.user});
 				}
 				else {
@@ -115,6 +114,15 @@ app.post('/auth', async (req, res) => {
 		catch(error) {
 			res.send({ status: 'error', error });
 		};
+	}
+});
+
+app.get('/loginSession', (req, res) => {
+	if (req.session && req.session.user) {
+		res.send({ status: 'ok', user: req.session.user });
+	}
+	else {
+		res.send({ status: 'error', error: 'no session found' });
 	}
 });
 
@@ -275,7 +283,6 @@ app.post('/register', async (req, res) => {
 					// Save to session
 					if (req.session) {
 						req.session.user = newUser;
-						console.log('created new user', newUser); // TODO: delete
 					}
 					else {
 						console.error('Session is not set')

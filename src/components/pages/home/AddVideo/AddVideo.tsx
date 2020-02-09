@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { userSelector } from 'selectors';
-import { setVideos } from 'actions/videos';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
