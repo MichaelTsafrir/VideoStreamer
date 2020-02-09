@@ -1,27 +1,27 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import axios from 'axios';
 import './Player.scss';
-const jsmpeg = require('jsmpeg');
 
+// Outer Library with no ts, declare as any to prevent ts errors
+declare const JSMpeg: any;
 
 interface Props {
 	videoID: string,
 }
 
 const Player: React.FC<Props> = (props) => {
-	const videoCanvasId = 'videoCanvas';
-	const playerRef = useRef(null);
+	// const playerRef = useRef(null);
 	const { videoID } = props;
 	
 	useEffect(() => {
-		if (videoID) {	
-			let client: WebSocket;
+		if (videoID) {
+			let player: any;
 
 			// Create a cancel token for a rest call
 			const reqCancelToken = axios.CancelToken.source();
 
 			// Close function for the player
-			const closeFunction = () => client && client.close();
+			const closeFunction = () => player && player.destroy();
 
 			axios.post(
 				'http://localhost:3001/startVideo',
@@ -32,12 +32,13 @@ const Player: React.FC<Props> = (props) => {
 				const { error, status, port } = res.data;
 
 				if (status === "ok") {
-					// Create a new web socket and a canvas for the video
-					client = new WebSocket(`ws://localhost:${port}`);
-					const canvas = document.getElementById(videoCanvasId);
-					new jsmpeg(client, {	
-						canvas,
-					});
+					// Create a new canvas for the video
+					const canvas = document.createElement("canvas");
+					canvas.id = "videoCanvas";
+
+					// Attach canvas to the video container
+					document.getElementById('player-container')?.appendChild(canvas);
+					player = new JSMpeg.Player(`ws://localhost:${port}`, { canvas });
 				}
 				else {
 					// log error
@@ -54,8 +55,7 @@ const Player: React.FC<Props> = (props) => {
 	}, [videoID]);
 	
 	return (
-		<div className="jsmpeg">
-			<canvas ref={playerRef} id={videoCanvasId}></canvas>
+		<div className="jsmpeg" id="player-container">
 		</div>
 	);
 };
