@@ -27,7 +27,7 @@ export const LibraryPage: React.FC<Props> = ({ match, history }) => {
 				<VideoList />
 				<div className="player-container">
 					<Container>
-						<Player videoID={match.params.videoID} />
+						{ match.params.videoID && <Player videoID={match.params.videoID} /> }
 					</Container>
 					<Link to='/'>Add new video</Link>
 				</div>

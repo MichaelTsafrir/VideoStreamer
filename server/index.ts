@@ -14,19 +14,7 @@ const Stream = require('node-rtsp-stream');
 
 // rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov
 // Outer library, has no TS definition
-// let stream: any;
-// const stream = new Stream({
-// 	name: "test",
-// 	streamUrl: "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov",
-// 	wsPort: webSocketPort,
-// 	ffmpegOptions: {
-// 		'-vb': "50m",
-// 		'-stats': '',
-// 		'-r': 30,
-// 		'-tune': "film",
-// 		"-preset": "medium",
-// 	},
-// });
+let stream: any;
 
 const port = process.env.PORT || 3001;
 
@@ -177,40 +165,6 @@ app.get('/videos/:userID', async (req, res) => {
 	}
 });
 
-// // Check if stream already exists
-// if (stream) {
-// 	// Kill running stream
-// 	stream.stop();
-// }
-
-// let stream: any;
-// stream = new Stream({
-// 	name: "test",
-// 	streamUrl: "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov",
-// 	wsPort: webSocketPort,
-// 	ffmpegOptions: {
-// 		'-vb': "50m",
-// 		'-stats': '',
-// 		'-r': 30,
-// 		'-tune': "film",
-// 		"-preset": "medium",
-// 	},
-// });
-
-let stream: any;
-// stream = new Stream({
-// 	name: "test",
-// 	streamUrl: "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov",
-// 	wsPort: webSocketPort,
-// 	ffmpegOptions: {
-// 		'-vb': "50m",
-// 		'-stats': '',
-// 		'-r': 30,
-// 		'-tune': "film",
-// 		"-preset": "medium",
-// 	},
-// });
-
 app.post('/startVideo', async (req, res) => {
 	// Check if user is logged in
 	if (req.session && req.session.user) {
@@ -233,32 +187,32 @@ app.post('/startVideo', async (req, res) => {
 					const video = data[0];
 
 					// Check if stream already exists
-					if (stream) {
+					/*if (stream) {
 						// Kill running stream
 						stream.mpeg1Muxer.stream.kill();
-						const test = stream.stop();
-						console.log(test.mpeg1Muxer.stream.killed);
-					}
+						stream.wsServer.close();
+						stream.stop();
+					}*/
 
 					// Create a new stream through web socket
-					if (! stream) {
-						stream = new Stream({
-							name: video.name,
-							streamUrl: video.url,
-							wsPort: webSocketPort,
-							ffmpegOptions: {
-								'-vb': "50m",
-								'-stats': '',
-								'-r': 30,
-								'-tune': "film",
-								"-preset": "medium",
-							},
-						});
+					stream = new Stream({
+						name: video.name,
+						streamUrl: video.url,
+						wsPort: webSocketPort,
+						ffmpegOptions: {
+							'-vb': "50m",
+							'-stats': '',
+							'-r': 30,
+							'-tune': "film",
+							"-preset": "medium",
+						},
+					});
+					
 
-						stream.wsServer.on('error', function() {
-							stream.mpeg1Muxer.stream.kill();
-						});
-					}
+					// Kill Player if WS error occurs
+					stream.wsServer.on('error', function() {
+						stream.mpeg1Muxer.stream.kill();
+					});
 
 					res.send({ status: 'ok' })
 				}
