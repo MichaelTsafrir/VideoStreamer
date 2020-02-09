@@ -73,7 +73,6 @@ const AddVideo: React.FC<Props> = () => {
 
 		// Sidenote: setState is asynchronous so we can't rely on error param when checking for errors
 		if (name && url && description && isUrlValid && user) {
-			console.log(error)
 			try {
 				const res = await axios.post('http://localhost:3001/addVideo', {
 					name,

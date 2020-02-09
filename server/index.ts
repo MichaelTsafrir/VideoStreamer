@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import session from 'express-session';
 import mongoose from 'mongoose';
 import connectMongo from 'connect-mongo';
+import bcrypt from 'bcrypt';
 import { User, Video } from '../common/types';
 import { webSocketPort } from '../common/common';
 
@@ -17,6 +18,7 @@ const Stream = require('node-rtsp-stream');
 let stream: any;
 
 const port = process.env.PORT || 3001;
+const saltRounds = 10;
 
 const app = express();
 
@@ -62,11 +64,11 @@ app.post('/auth', async (req, res) => {
 	else {
 		try {
 			// Fetch user
-			const data = await userModel.find({ username, password }).limit(1);
+			const data = await userModel.find({ username }).limit(1);
 			
 			// Check if user was found
 			if (!data || !data.length) {
-				res.send({ status: 'error', error: 'Wrong username or password'});
+				res.send({ status: 'error', error: 'Username does not exists'});
 			}
 			else {
 				const {
@@ -77,26 +79,39 @@ app.post('/auth', async (req, res) => {
 					email,
 				} = data[0];
 
-				// Create a User object from the server data
-				const user: User = {
-					id,
-					username,
-					firstname,
-					lastname,
-					email,
-				};
+				// Match password to password's hash
+				bcrypt.compare(password, data[0].password).then(result => {
+					if (!result) {
+						res.send({ status: 'error', error: 'Wrong password'});
+					}
+					else {
+						// Create a User object from the server data
+						const user: User = {
+							id,
+							username,
+							firstname,
+							lastname,
+							email,
+						};
 
-				// Save login session
-				if (req.session) {
-					req.session.user = user;
-					req.session.test = true;
+						// Save login session
+						if (req.session) {
+							req.session.user = user;
+							req.session.test = true;
 
-					res.send({ status: 'ok', user: req.session.user});
-				}
-				else {
-					console.error('Session is not set')
-					res.send({ status: 'error', error: 'could not create session'});
-				}
+							res.send({ status: 'ok', user: req.session.user});
+						}
+						else {
+							console.error('Session is not set')
+							res.send({ status: 'error', error: 'could not create session'});
+						}
+					}
+				}).catch(error => {
+					// Log event
+					console.log("Authentication bcrypt decode failure", error);
+
+					res.send({ status: 'error', error: 'Server failed authentication'});
+				});
 			}
 		}
 		catch(error) {
@@ -242,35 +257,49 @@ app.post('/register', async (req, res) => {
 				res.send({ status: 'error', error: 'username already exists' })
 			}
 			else {
-				// Create new User document for mongo
-				const newUser = new userModel({
-					username,
-					password,
-					firstname,
-					lastname,
-					email,
-				});
-		
-				try {
-					// Save user in mongo
-					await newUser.save();
-					
-					// Save to session
-					if (req.session) {
-						req.session.user = newUser;
-					}
-					else {
-						console.error('Session is not set')
-					}
-		
-					res.send({ status: 'ok', user: newUser })
-				}
-				catch(error) {
-					// Log error
-					console.log(error);
+				bcrypt.genSalt(saltRounds)
+				.then(salt => {
+					bcrypt.hash(password, salt)
+					.then(hash => {
+						// Create new User document for mongo
+						const newUser = new userModel({
+							username,
+							password: hash,
+							firstname,
+							lastname,
+							email,
+						});
 
-					res.send({ status: 'error', error: 'server failed registering user' });
-				};
+						try {
+							// Save user in mongo
+							newUser.save();
+							
+							// Save to session
+							if (req.session) {
+								req.session.user = newUser;
+							}
+							else {
+								console.error('Session is not set')
+							}
+				
+							res.send({ status: 'ok', user: newUser })
+						}
+						catch(error) {
+							// Log error
+							console.log(error);
+		
+							res.send({ status: 'error', error: 'server failed registering user' });
+						};
+					})
+					.catch(error => {
+						// Couldn't generate hash, log event
+						console.log("bcrypt generate hash failed", error);
+					});
+				})
+				.catch(error => {
+					// Couldn't generate salt, log event
+					console.log("bcrypt genSalt failed", error);
+				});
 			}
 		}
 		catch(error) {
