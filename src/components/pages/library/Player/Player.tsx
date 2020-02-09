@@ -34,7 +34,6 @@ const Player: React.FC<Props> = (props) => {
 					console.log("Failed to start stream on server", error);
 				}
 				else {
-					console.log("CLIENT CONNECTED");
 					const canvas = document.getElementById(videoCanvasId);
 					client = new WebSocket('ws://localhost:3002');
 					new jsmpeg(client, {	
