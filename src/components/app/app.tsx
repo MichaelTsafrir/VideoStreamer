@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { createStore, compose } from 'redux';
 import { Provider } from 'react-redux';
@@ -11,6 +11,7 @@ import logo from '../../images/logo.png';
 import './app.scss';
 import Axios from 'axios';
 import { setUser } from 'actions/user';
+import Loader from 'components/Loader/Loader';
 
 declare global {
 	interface Window {
@@ -27,6 +28,8 @@ const store = createStore(
 
 
 const App: React.FC = () => {
+	const [init, setInit] = useState(false);
+
 	useEffect(() => {
 		Axios.get('http://localhost:3001/loginSession', { withCredentials: true })
 		.then(res => {
@@ -36,6 +39,8 @@ const App: React.FC = () => {
 				// User was logged in
 				store.dispatch(setUser(user));
 			}
+
+			setInit(true);
  		})
 		.catch(error => {
 			// error occured, log event
@@ -50,6 +55,8 @@ const App: React.FC = () => {
 				<div className="container">
 					<div className="main">
 						<h2 className="app-header">Video Streamer</h2>
+					{ 
+						init ?
 						<BrowserRouter>
 							<Switch>
 								<Route path='/' exact component={HomePage} />
@@ -58,7 +65,9 @@ const App: React.FC = () => {
 								<Route path='/library/:videoID?' exact component={LibraryPage} />
 								<Route path='/' render={() => <h3>Oops! Could't Find Page (404)!</h3>} />
 							</Switch>
-						</BrowserRouter>
+						</BrowserRouter> :
+						<Loader />
+					}
 					</div>
 				</div>
 			</div>
