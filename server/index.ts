@@ -6,10 +6,11 @@ import mongoose from 'mongoose';
 import connectMongo from 'connect-mongo';
 import bcrypt from 'bcrypt';
 import { User, Video } from '../src/common/types';
-import { webSocketPort, appAddress, serverPort } from '../src/common/common';
+import { webSocketPort, appAddress, serverPort, dbAddress } from '../src/common/common';
 
 import { userModel }  from './models/users';
 import { videoModel } from './models/videos';
+import { ffmpegOptions } from './config';
 
 const Stream = require('node-rtsp-stream');
 
@@ -22,7 +23,7 @@ const saltRounds = 10;
 const app = express();
 
 // Create mongo connection
-mongoose.connect('mongodb://localhost/videostreamer', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(dbAddress, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Connect the session to be stored on mongo
 const MongoStore = connectMongo(session);
@@ -214,13 +215,7 @@ app.post('/startVideo', async (req, res) => {
 						height: 240,
 						width: 320,
 						wsPort: webSocketPort,
-						ffmpegOptions: {
-							'-vb': "50m",
-							'-stats': '',
-							'-r': 30,
-							'-tune': "film",
-							"-preset": "medium",
-						},
+						ffmpegOptions,
 					});
 
 					// Kill Player if WS error occurs
