@@ -12,13 +12,16 @@ import './app.scss';
 import Axios from 'axios';
 import { setUser } from 'actions/user';
 import Loader from 'components/Loader/Loader';
+import { serverAddress } from '../../common/common';
 
+// Add redux devtools to ts Window configuration
 declare global {
 	interface Window {
 		__REDUX_DEVTOOLS_EXTENSION_COMPOSE__?: typeof compose;
 	}
 };
 
+// Add redux devtools to store
 const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const store = createStore(
@@ -26,12 +29,11 @@ const store = createStore(
 	composeEnhancer(),
 );
 
-
 const App: React.FC = () => {
 	const [init, setInit] = useState(false);
 
 	useEffect(() => {
-		Axios.get('http://localhost:3001/loginSession', { withCredentials: true })
+		Axios.get(`${serverAddress}/loginSession`, { withCredentials: true })
 		.then(res => {
 			const { status, user } = res.data;
 
@@ -39,14 +41,12 @@ const App: React.FC = () => {
 				// User was logged in
 				store.dispatch(setUser(user));
 			}
-
-			setInit(true);
  		})
 		.catch(error => {
 			// error occured, log event
 			console.log("Error on checking login session from server", error);
-			setInit(true);
-		});
+		})
+		.finally(() => setInit(true));
 	}, []);
 
 	return (

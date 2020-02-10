@@ -8,6 +8,7 @@ import Container from 'components/Container/Container';
 import AddVideoButton from "../../../../images/Add-video.png"
 import ClearButton from "../../../../images/clear-button.png"
 import './AddVideo.scss';
+import { serverAddress } from 'common/common';
 
 interface Props {};
 
@@ -74,7 +75,7 @@ const AddVideo: React.FC<Props> = () => {
 		// Sidenote: setState is asynchronous so we can't rely on error param when checking for errors
 		if (name && url && description && isUrlValid && user) {
 			try {
-				const res = await axios.post('http://localhost:3001/addVideo', {
+				const res = await axios.post(`${serverAddress}/addVideo`, {
 					name,
 					description,
 					url,

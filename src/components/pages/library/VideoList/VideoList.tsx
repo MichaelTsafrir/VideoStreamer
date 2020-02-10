@@ -6,6 +6,7 @@ import { videosSelector, userSelector } from '../../../../selectors';
 import Video from '../Video/Video';
 
 import './VideoList.scss';
+import { serverAddress } from 'common/common';
 
 const VideoList = () => {
 	const dispatch = useDispatch();
@@ -14,7 +15,7 @@ const VideoList = () => {
 
 	useEffect(() => {
 		if (user) {
-			axios.get(`http://localhost:3001/videos/${user.id}`, { withCredentials: true })
+			axios.get(`${serverAddress}/videos/${user.id}`, { withCredentials: true })
 			.then((res) => {
 				const {status, error, videos} = res.data;
 

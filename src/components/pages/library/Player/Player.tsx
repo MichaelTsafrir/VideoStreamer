@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
 import './Player.scss';
+import { serverAddress, webSocketURL } from 'common/common';
 
 // Outer Library with no ts, declare as any to prevent ts errors
 declare const JSMpeg: any;
@@ -24,12 +25,12 @@ const Player: React.FC<Props> = (props) => {
 			const closeFunction = () => player && player.destroy();
 
 			axios.post(
-				'http://localhost:3001/startVideo',
+				`${serverAddress}/startVideo`,
 				{ videoID: videoID },
 				{ cancelToken: reqCancelToken.token, withCredentials: true }
 			)
 			.then(res => {
-				const { error, status, port } = res.data;
+				const { error, status } = res.data;
 
 				if (status === "ok") {
 					// Create a new canvas for the video
@@ -38,7 +39,7 @@ const Player: React.FC<Props> = (props) => {
 
 					// Attach canvas to the video container
 					document.getElementById('player-container')?.appendChild(canvas);
-					player = new JSMpeg.Player(`ws://localhost:${port}`, { canvas });
+					player = new JSMpeg.Player(webSocketURL, { canvas });
 				}
 				else {
 					// log error

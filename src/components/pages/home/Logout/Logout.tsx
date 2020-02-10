@@ -6,6 +6,7 @@ import { removeVideos } from 'actions/videos';
 
 import LogOutButton from '../../../../images/logout-button.png';
 import './Logout.scss';
+import { serverAddress } from 'common/common';
 
 interface Props {};
 
@@ -15,7 +16,7 @@ const Logout: React.FC<Props> = () => {
 	const handleLogOut = async (e: React.MouseEvent) => {
 		e.preventDefault();
 
-		const res = await axios.post('http://localhost:3001/logOut', undefined, { withCredentials: true });
+		const res = await axios.post(`${serverAddress}/logOut`, undefined, { withCredentials: true });
 		const { error, status } = res.data;
 
 		if (status === "ok") {

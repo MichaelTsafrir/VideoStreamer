@@ -1,4 +1,4 @@
-import { Video } from '../../common/types';
+import { Video } from '../common/types';
 import { SET_VIDEOS, REMOVE_VIDEOS, VideosActionTypes } from "../actions/videos";
 
 export type VideosState = Video[] | null;

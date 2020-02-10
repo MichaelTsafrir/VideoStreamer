@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import './Register.scss';
 import Container from '../../../Container/Container';
 import { setUser } from '../../../../actions/user';
+import { serverAddress } from 'common/common';
 
 interface Props {}
 
@@ -102,7 +103,7 @@ const Register: React.FC<Props> = () => {
 		if (canRegister) {
 			try {
 				const res = await axios.post(
-					'http://localhost:3001/register',
+					`${serverAddress}/register`,
 					{
 					username,
 					password,

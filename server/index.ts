@@ -5,8 +5,8 @@ import session from 'express-session';
 import mongoose from 'mongoose';
 import connectMongo from 'connect-mongo';
 import bcrypt from 'bcrypt';
-import { User, Video } from '../common/types';
-import { webSocketPort } from '../common/common';
+import { User, Video } from '../src/common/types';
+import { webSocketPort, appAddress, serverPort } from '../src/common/common';
 
 import { userModel }  from './models/users';
 import { videoModel } from './models/videos';
@@ -17,7 +17,6 @@ const Stream = require('node-rtsp-stream');
 // Outer library, has no TS definition
 let stream: any;
 
-const port = process.env.PORT || 3001;
 const saltRounds = 10;
 
 const app = express();
@@ -36,9 +35,8 @@ db.once('open', () => {
 	console.log("Connected to mongo");
 });
 
-
 // Allow Cross-Origin
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cors({ origin: appAddress, credentials: true }));
 
 // Use bodyParser Middleware to fetch body params
 app.use(bodyParser.json());
@@ -102,7 +100,7 @@ app.post('/auth', async (req, res) => {
 							res.send({ status: 'ok', user: req.session.user});
 						}
 						else {
-							console.error('Session is not set')
+							console.log('Session is not set')
 							res.send({ status: 'error', error: 'could not create session'});
 						}
 					}
@@ -180,8 +178,6 @@ app.get('/videos/:userID', async (req, res) => {
 	}
 });
 
-// let wsCounter = 3002;
-
 app.post('/startVideo', async (req, res) => {
 	// Check if user is logged in
 	if (req.session && req.session.user) {
@@ -198,7 +194,7 @@ app.post('/startVideo', async (req, res) => {
 				
 				// Check if video was found
 				if (!data.length) {
-					res.send({ status: 'error', error: `Couldn't find videoID ${videoID}` })
+					res.send({ status: 'error', error: `Couldn't find videoID ${videoID}` });
 				}
 				else{
 					const video = data[0];
@@ -232,7 +228,7 @@ app.post('/startVideo', async (req, res) => {
 						stream.mpeg1Muxer.stream.kill();
 					});
 
-					res.send({ status: 'ok', port: webSocketPort });
+					res.send({ status: 'ok' });
 				}
 			}
 			catch(error) {
@@ -257,7 +253,7 @@ app.post('/register', async (req, res) => {
 			
 			// Check whether data was found
 			if (!!data.length) {
-				res.send({ status: 'error', error: 'username already exists' })
+				res.send({ status: 'error', error: 'username already exists' });
 			}
 			else {
 				bcrypt.genSalt(saltRounds)
@@ -282,10 +278,10 @@ app.post('/register', async (req, res) => {
 								req.session.user = newUser;
 							}
 							else {
-								console.error('Session is not set')
+								console.log('Session is not set');
 							}
 				
-							res.send({ status: 'ok', user: newUser })
+							res.send({ status: 'ok', user: newUser });
 						}
 						catch(error) {
 							// Log error
@@ -313,7 +309,7 @@ app.post('/register', async (req, res) => {
 		};	
 	}
 	else {
-		res.send({ status: 'error', error: 'missing params from request' })
+		res.send({ status: 'error', error: 'missing params from request' });
 	}
 });
 
@@ -330,12 +326,12 @@ app.post('/addVideo', async (req, res) => {
 				description,
 				url,
 				byUser,
-				addDate: Date.now()
+				addDate: Date.now(),
 			});
 
 			try {
 				// Save document in mongo
-				await newVideo.save()
+				await newVideo.save();
 				
 				res.send({ status: 'ok' });
 			}
@@ -347,7 +343,7 @@ app.post('/addVideo', async (req, res) => {
 			};
 		}
 		else {
-			res.send({ status: 'error', error: 'missing params from request' })
+			res.send({ status: 'error', error: 'missing params from request' });
 		}
 	}
 	else {
@@ -355,6 +351,6 @@ app.post('/addVideo', async (req, res) => {
 	}
 });
 
-app.listen(port, () => {
-	console.log(`Server is listening on ${port}`);
+app.listen(serverPort, () => {
+	console.log(`Server is listening on ${serverPort}`);
 });
