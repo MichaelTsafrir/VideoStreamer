@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
-import { setUser } from '../../../../actions/user';
+import { setUser } from 'actions/user';
 import './login.scss';
-import Container from '../../../Container/Container';
+import Container from 'components/Container/Container';
 import { serverAddress } from 'common/common';
 
 interface Props {}

@@ -6,13 +6,13 @@ import { HomePage } from '../pages/home/homePage';
 import { LoginPage } from '../pages/login/loginPage';
 import { RegisterPage } from '../pages/register/registerPage';
 import { LibraryPage } from '../pages/library/libraryPage';
-import rootReducers from '../../reducers';
-import logo from '../../images/logo.png';
+import rootReducers from 'reducers';
+import logo from 'images/logo.png';
 import './app.scss';
 import Axios from 'axios';
 import { setUser } from 'actions/user';
 import Loader from 'components/Loader/Loader';
-import { serverAddress } from '../../common/common';
+import { serverAddress } from 'common/common';
 
 // Add redux devtools to ts Window configuration
 declare global {
@@ -33,6 +33,7 @@ const App: React.FC = () => {
 	const [init, setInit] = useState(false);
 
 	useEffect(() => {
+		// Check if user has already a running session
 		Axios.get(`${serverAddress}/loginSession`, { withCredentials: true })
 		.then(res => {
 			const { status, user } = res.data;

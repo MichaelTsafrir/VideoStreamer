@@ -1,5 +1,5 @@
 import React from 'react';
-import Loading from '../../images/loader.gif';
+import Loading from 'images/loader.gif';
 import Container from 'components/Container/Container';
 import './Loader.scss';
 

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { userSelector } from '../../../selectors';
+import { userSelector } from 'selectors';
 import { RouteComponentProps, Link } from 'react-router-dom';
 import Register from './Register/Register';
 

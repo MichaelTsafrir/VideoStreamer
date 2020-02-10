@@ -1,5 +1,5 @@
 import React from 'react';
-import { User } from '../../../../common/types';
+import { User } from 'common/types';
 import './Header.scss';
 import Logout from '../Logout/Logout';
 

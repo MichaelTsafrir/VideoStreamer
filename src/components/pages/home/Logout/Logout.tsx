@@ -1,10 +1,10 @@
 import React from 'react';
 import axios from 'axios';
-import { removeUser } from '../../../../actions/user';
+import { removeUser } from 'actions/user';
 import { useDispatch } from 'react-redux';
 import { removeVideos } from 'actions/videos';
 
-import LogOutButton from '../../../../images/logout-button.png';
+import LogOutButton from 'images/logout-button.png';
 import './Logout.scss';
 import { serverAddress } from 'common/common';
 

@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { setVideos } from '../../../../actions/videos';
-import { videosSelector, userSelector } from '../../../../selectors';
+import { setVideos } from 'actions/videos';
+import { videosSelector, userSelector } from 'selectors';
 import Video from '../Video/Video';
 
 import './VideoList.scss';

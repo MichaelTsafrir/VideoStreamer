@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { RouteComponentProps, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { userSelector } from '../../../selectors';
+import { userSelector } from 'selectors';
 import Header from './Header/Header';
 import AddVideo from './AddVideo/AddVideo';
 

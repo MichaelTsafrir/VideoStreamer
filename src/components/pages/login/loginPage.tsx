@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import Login from './login/login';
 import { useSelector } from 'react-redux';
-import { userSelector } from '../../../selectors';
+import { userSelector } from 'selectors';
 
 interface Props extends RouteComponentProps {}
 

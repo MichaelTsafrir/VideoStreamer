@@ -1,7 +1,7 @@
 import React from 'react';
 import dayjs from 'dayjs';
-import { Video as VideoType } from "../../../../common/types";
-import videoPlaceholder from "../../../../images/video-placeholder.png";
+import { Video as VideoType } from "common/types";
+import videoPlaceholder from "images/video-placeholder.png";
 
 import './Video.scss';
 import { useHistory } from 'react-router-dom';

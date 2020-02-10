@@ -5,8 +5,8 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
 import Container from 'components/Container/Container';
-import AddVideoButton from "../../../../images/Add-video.png"
-import ClearButton from "../../../../images/clear-button.png"
+import AddVideoButton from "images/Add-video.png"
+import ClearButton from "images/clear-button.png"
 import './AddVideo.scss';
 import { serverAddress } from 'common/common';
 
