@@ -14,7 +14,6 @@ import { ffmpegOptions } from './config';
 
 const Stream = require('node-rtsp-stream');
 
-// rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov
 // Outer library, has no TS definition
 let stream: any;
 
