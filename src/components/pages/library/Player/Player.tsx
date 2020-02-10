@@ -24,6 +24,7 @@ const Player: React.FC<Props> = (props) => {
 			// Close function for the player
 			const closeFunction = () => player && player.destroy();
 
+			// Request server to start video
 			axios.post(
 				`${serverAddress}/startVideo`,
 				{ videoID: videoID },

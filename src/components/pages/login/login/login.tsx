@@ -15,6 +15,7 @@ const Login: React.FC<Props> = () => {
 
 	const dispatch = useDispatch();
 
+	// Handle the login event
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
@@ -23,6 +24,7 @@ const Login: React.FC<Props> = () => {
 		}
 		else {
 			try {
+				// Fetch user with current credentials
 				const res = await axios.post(`${serverAddress}/auth`, { username, password }, { withCredentials: true });
 				const { error, user } = res.data;
 

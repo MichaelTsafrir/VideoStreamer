@@ -8,18 +8,22 @@ import Video from '../Video/Video';
 import './VideoList.scss';
 import { serverAddress } from 'common/common';
 
-const VideoList = () => {
+interface Props {};
+
+const VideoList: React.FC<Props> = () => {
 	const dispatch = useDispatch();
 	const user = useSelector(userSelector);
 	const videos = useSelector(videosSelector);
 
 	useEffect(() => {
 		if (user) {
+			// Fetch all videos of user
 			axios.get(`${serverAddress}/videos/${user.id}`, { withCredentials: true })
 			.then((res) => {
 				const {status, error, videos} = res.data;
 
 				if (status === "ok") {
+					// Add videos data to redux
 					dispatch(setVideos(videos));
 				}
 				else {

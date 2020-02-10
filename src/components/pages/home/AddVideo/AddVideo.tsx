@@ -42,8 +42,10 @@ const AddVideo: React.FC<Props> = () => {
 		clearError();
 	};
 
+	// Check rtsp url
 	const checkUrl = () => url.startsWith('rtsp://');
 
+	// Add a new video function
 	const handleAdd = async (e: React.MouseEvent) => {
 		e.preventDefault();
 		
@@ -75,6 +77,7 @@ const AddVideo: React.FC<Props> = () => {
 		// Sidenote: setState is asynchronous so we can't rely on error param when checking for errors
 		if (name && url && description && isUrlValid && user) {
 			try {
+				// Add new video to server
 				const res = await axios.post(`${serverAddress}/addVideo`, {
 					name,
 					description,

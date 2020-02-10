@@ -16,10 +16,12 @@ const Logout: React.FC<Props> = () => {
 	const handleLogOut = async (e: React.MouseEvent) => {
 		e.preventDefault();
 
+		// Send server log out request
 		const res = await axios.post(`${serverAddress}/logOut`, undefined, { withCredentials: true });
 		const { error, status } = res.data;
 
 		if (status === "ok") {
+			// Remove data from redux
 			dispatch(removeVideos());
 			dispatch(removeUser());
 		}

@@ -50,6 +50,7 @@ const Register: React.FC<Props> = () => {
 		setIsRegistered(false);
 	};
 
+	// Handle the registartion
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
@@ -102,14 +103,15 @@ const Register: React.FC<Props> = () => {
 
 		if (canRegister) {
 			try {
+				// Request server to register user
 				const res = await axios.post(
 					`${serverAddress}/register`,
 					{
-					username,
-					password,
-					firstname,
-					lastname,
-					email,
+						username,
+						password,
+						firstname,
+						lastname,
+						email,
 					},
 					{ withCredentials: true },
 				);
@@ -117,8 +119,10 @@ const Register: React.FC<Props> = () => {
 				const { error, status, user } = res.data;
 
 				if (status === "ok") {
+					// Inform user of successful registartion
 					setIsRegistered(true);
 					
+					// Set redux and trigger redirect
 					setTimeout(() => {
 						handleClear();
 						dispatch(setUser(user));
